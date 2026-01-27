@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import api from '../api';
 import { Package, TrendingUp, Plus, Edit } from 'lucide-react';
 
@@ -6,7 +6,8 @@ const AdminDashboard = () => {
     const [activeTab, setActiveTab] = useState('overview');
     const [stats, setStats] = useState({ totalSales: 0, orderCount: 0, lowStockItems: [] });
     const [products, setProducts] = useState([]);
-    const [newItem, setNewItem] = useState({ name: '', category: 'Clothing', price: '', stock: '', imageUrl: '', description: '' });
+    const [newItem, setNewItem] = useState({ name: '', category: 'Clothing', price: '', stock: '', image: null, description: '' });
+    const fileInputRef = useRef(null);
 
     useEffect(() => {
         fetchStats();
@@ -34,11 +35,24 @@ const AdminDashboard = () => {
     const handleAddItem = async (e) => {
         e.preventDefault();
         try {
-            await api.post('/products', newItem);
+            const formData = new FormData();
+            formData.append('name', newItem.name);
+            formData.append('category', newItem.category);
+            formData.append('price', newItem.price);
+            formData.append('stock', newItem.stock);
+            formData.append('description', newItem.description);
+            if (newItem.image) {
+                formData.append('image', newItem.image);
+            }
+
+            // Important: Send headers for multipart/form-data (axios usually handles this automatically with FormData)
+            await api.post('/products', formData);
             alert('Product added successfully');
-            setNewItem({ name: '', category: 'Clothing', price: '', stock: '', imageUrl: '', description: '' });
+            setNewItem({ name: '', category: 'Clothing', price: '', stock: '', image: null, description: '' });
+            if (fileInputRef.current) fileInputRef.current.value = '';
             fetchProducts();
         } catch (err) {
+            console.error(err);
             alert('Failed to add product');
         }
     };
@@ -83,7 +97,7 @@ const AdminDashboard = () => {
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '2rem', marginBottom: '3rem' }}>
                         <div className="card" style={{ textAlign: 'center' }}>
                             <h3>Monthly Sales</h3>
-                            <p style={{ fontSize: '2rem', color: 'var(--color-primary)', fontWeight: 'bold' }}>${stats.totalSales}</p>
+                            <p style={{ fontSize: '2rem', color: 'var(--color-primary)', fontWeight: 'bold' }}>₹{stats.totalSales}</p>
                         </div>
                         <div className="card" style={{ textAlign: 'center' }}>
                             <h3>Orders This Month</h3>
@@ -137,7 +151,7 @@ const AdminDashboard = () => {
             {activeTab === 'add' && (
                 <div className="card" style={{ maxWidth: '600px', margin: '0 auto' }}>
                     <h3 style={{ marginBottom: '2rem' }}>Add New Item</h3>
-                    <form onSubmit={handleAddItem} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    <form onSubmit={handleAddItem} encType="multipart/form-data" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                         <input
                             type="text"
                             placeholder="Product Name"
@@ -170,10 +184,10 @@ const AdminDashboard = () => {
                             />
                         </div>
                         <input
-                            type="text"
-                            placeholder="Image URL"
-                            value={newItem.imageUrl}
-                            onChange={(e) => setNewItem({ ...newItem, imageUrl: e.target.value })}
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => setNewItem({ ...newItem, image: e.target.files[0] })}
+                            ref={fileInputRef}
                             required
                         />
                         <textarea

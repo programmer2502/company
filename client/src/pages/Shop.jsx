@@ -28,12 +28,21 @@ const Shop = () => {
             <div className="grid-products">
                 {products.map((product) => (
                     <div key={product._id} className="card">
-                        <div style={{ height: '200px', backgroundColor: '#333', marginBottom: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            {/* Placeholder for image */}
-                            <span style={{ color: '#666' }}>Product Image</span>
+                        <div style={{ height: '300px', backgroundColor: '#f0f0f0', marginBottom: '1rem', overflow: 'hidden', borderRadius: '4px' }}>
+                            {product.imageUrl ? (
+                                <img
+                                    src={product.imageUrl.startsWith('http') ? product.imageUrl : `http://localhost:5000${product.imageUrl}`}
+                                    alt={product.name}
+                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                />
+                            ) : (
+                                <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#888' }}>
+                                    No Image
+                                </div>
+                            )}
                         </div>
                         <h3 style={{ fontSize: '1.2rem', marginBottom: '0.5rem' }}>{product.name}</h3>
-                        <p style={{ color: 'var(--color-primary)', fontSize: '1.1rem', fontWeight: 'bold' }}>${product.price}</p>
+                        <p style={{ color: 'var(--color-primary)', fontSize: '1.1rem', fontWeight: 'bold' }}>₹{product.price}</p>
                         <button
                             className="btn btn-primary"
                             style={{ width: '100%', marginTop: '1rem' }}

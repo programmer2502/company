@@ -26,7 +26,7 @@ const Navbar = () => {
         }}>
             <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Link to="/" style={{ fontSize: '1.5rem', fontFamily: 'var(--font-display)', fontWeight: 'bold', color: 'var(--color-primary)' }}>
-                    MANNER FOOTWEAR
+                    MANNER THE WAY OF STYLE
                 </Link>
 
                 {/* Desktop Menu */}

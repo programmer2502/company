@@ -34,7 +34,7 @@ function App() {
             color: 'var(--color-text-muted)',
             fontSize: '0.9rem'
           }}>
-            &copy; {new Date().getFullYear()} MANNER FOOTWEAR. Premium Fashion.
+            &copy; {new Date().getFullYear()} MANNER THE WAY OF STYLE. Premium Fashion.
           </footer>
         </div>
       </CartProvider>

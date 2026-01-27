@@ -2,6 +2,20 @@ const express = require('express');
 const router = express.Router();
 const Product = require('../models/Product');
 const jwt = require('jsonwebtoken');
+const multer = require('multer');
+const path = require('path');
+
+// Multer Config
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/');
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({ storage });
 
 // Middleware to check auth
 const protect = (req, res, next) => {
@@ -38,9 +52,20 @@ router.get('/', async (req, res) => {
 });
 
 // Add Product (Admin)
-router.post('/', protect, admin, async (req, res) => {
+router.post('/', protect, admin, upload.single('image'), async (req, res) => {
     try {
-        const product = new Product(req.body);
+        const { name, category, price, stock, description } = req.body;
+        const imageUrl = req.file ? `/uploads/${req.file.filename}` : '';
+
+        const product = new Product({
+            name,
+            category,
+            price,
+            stock,
+            imageUrl,
+            description
+        });
+
         await product.save();
         res.status(201).json(product);
     } catch (err) {
@@ -49,9 +74,14 @@ router.post('/', protect, admin, async (req, res) => {
 });
 
 // Update Product (Admin)
-router.put('/:id', protect, admin, async (req, res) => {
+router.put('/:id', protect, admin, upload.single('image'), async (req, res) => {
     try {
-        const product = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const updateData = { ...req.body };
+        if (req.file) {
+            updateData.imageUrl = `/uploads/${req.file.filename}`;
+        }
+
+        const product = await Product.findByIdAndUpdate(req.params.id, updateData, { new: true });
         res.json(product);
     } catch (err) {
         res.status(500).json({ error: err.message });
