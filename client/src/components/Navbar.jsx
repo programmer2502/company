@@ -36,6 +36,9 @@ const Navbar = () => {
                     <Link to="/shop?category=Clothing">Clothing</Link>
                     <Link to="/shop?category=Shoes">Shoes</Link>
                     <Link to="/shop?category=Watches">Watches</Link>
+                    <Link to="/shop?category=Glasses">Glasses</Link>
+                    <Link to="/shop?category=Perfume">Perfume</Link>
+                    <Link to="/shop?category=Accessories">Accessories</Link>
                 </div>
 
                 <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>

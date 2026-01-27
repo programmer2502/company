@@ -166,6 +166,9 @@ const AdminDashboard = () => {
                             <option value="Clothing">Clothing</option>
                             <option value="Shoes">Shoes</option>
                             <option value="Watches">Watches</option>
+                            <option value="Glasses">Glasses</option>
+                            <option value="Perfume">Perfume</option>
+                            <option value="Accessories">Accessories</option>
                         </select>
                         <div style={{ display: 'flex', gap: '1rem' }}>
                             <input
