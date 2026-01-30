@@ -13,6 +13,7 @@ const CartPage = () => {
     const handleWhatsAppPayment = async () => {
         try {
             // Construct WhatsApp message
+            // Construct WhatsApp message// Construct WhatsApp message// Construct WhatsApp message
             let message = `*New Order Request*\n\n`;
             cart.forEach((item, index) => {
                 message += `${index + 1}. ${item.name} (Qty: ${item.quantity})\n`;
