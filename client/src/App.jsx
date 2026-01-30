@@ -7,6 +7,7 @@ import Register from './pages/Register';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
 import CartPage from './pages/CartPage';
+import ProtectedRoute from './components/ProtectedRoute'; // Import ProtectedRoute
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 
@@ -23,7 +24,14 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/admin-login" element={<AdminLogin />} />
-              <Route path="/admin" element={<AdminDashboard />} />
+              <Route
+                path="/admin"
+                element={
+                  <ProtectedRoute adminOnly={true}>
+                    <AdminDashboard />
+                  </ProtectedRoute>
+                }
+              />
               <Route path="/cart" element={<CartPage />} />
             </Routes>
           </div>

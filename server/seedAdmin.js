@@ -15,26 +15,35 @@ const connectDB = async () => {
     }
 };
 
+const fs = require('fs');
+
 const seedAdmin = async () => {
     try {
-        const adminExists = await User.findOne({ email: 'admin@example.com' });
-        if (adminExists) {
-            console.log('Admin user already exists');
-            process.exit();
-        }
+        console.log('Clearing existing admin users...');
+        await User.deleteMany({
+            $or: [
+                { username: 'admin' },
+                { email: 'admin@gmail.com' }
+            ]
+        });
 
+        console.log('Creating new admin user...');
         const admin = new User({
             username: 'admin',
-            email: 'admin@example.com',
-            password: 'adminpassword123',
+            email: 'admin@gmail.com',
+            password: 'Kishore@admin123',
             role: 'admin'
         });
 
         await admin.save();
         console.log('Admin user created successfully');
+
+        fs.writeFileSync('seed_result.txt', 'Success');
         process.exit();
     } catch (error) {
-        console.error('Error seeding admin:', error);
+        const errorMsg = 'Error seeding admin detailed: ' + error.message + '\nStack: ' + error.stack;
+        console.error(errorMsg);
+        fs.writeFileSync('seed_result.txt', errorMsg);
         process.exit(1);
     }
 };

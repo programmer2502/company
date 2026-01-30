@@ -5,16 +5,16 @@ const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const path = require('path');
 
-// Multer Config
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/');
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname));
-    }
+const ImageKit = require('imagekit');
+
+const imagekit = new ImageKit({
+    publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
+    privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
+    urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT
 });
 
+// Multer Config - Use Memory Storage for ImageKit
+const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 // Middleware to check auth
@@ -55,7 +55,16 @@ router.get('/', async (req, res) => {
 router.post('/', protect, admin, upload.single('image'), async (req, res) => {
     try {
         const { name, category, price, stock, description } = req.body;
-        const imageUrl = req.file ? `/uploads/${req.file.filename}` : '';
+        let imageUrl = '';
+
+        if (req.file) {
+            const uploadResponse = await imagekit.upload({
+                file: req.file.buffer,
+                fileName: req.file.originalname,
+                folder: '/products'
+            });
+            imageUrl = uploadResponse.url;
+        }
 
         const product = new Product({
             name,
@@ -69,6 +78,7 @@ router.post('/', protect, admin, upload.single('image'), async (req, res) => {
         await product.save();
         res.status(201).json(product);
     } catch (err) {
+        console.error(err);
         res.status(500).json({ error: err.message });
     }
 });
@@ -77,12 +87,29 @@ router.post('/', protect, admin, upload.single('image'), async (req, res) => {
 router.put('/:id', protect, admin, upload.single('image'), async (req, res) => {
     try {
         const updateData = { ...req.body };
+
         if (req.file) {
-            updateData.imageUrl = `/uploads/${req.file.filename}`;
+            const uploadResponse = await imagekit.upload({
+                file: req.file.buffer,
+                fileName: req.file.originalname,
+                folder: '/products'
+            });
+            updateData.imageUrl = uploadResponse.url;
         }
 
         const product = await Product.findByIdAndUpdate(req.params.id, updateData, { new: true });
         res.json(product);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Delete Product (Admin)
+router.delete('/:id', protect, admin, async (req, res) => {
+    try {
+        await Product.findByIdAndDelete(req.params.id);
+        res.json({ message: 'Product deleted' });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

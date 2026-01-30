@@ -24,11 +24,70 @@ const Home = () => {
             {/* Categories Preview */}
             <div className="container" style={{ padding: '5rem 2rem' }}>
                 <h2 className="section-title">Collections</h2>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
-                    {['Clothing', 'Shoes', 'Watches', 'Glasses', 'Perfume', 'Accessories'].map((cat) => (
-                        <div key={cat} className="card" style={{ height: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', cursor: 'pointer' }}>
-                            <h3 style={{ fontSize: '2rem', marginBottom: '1rem' }}>{cat}</h3>
-                            <Link to={`/shop?category=${cat}`} className="btn btn-outline">Explore</Link>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
+                    {[
+                        { name: 'Clothing', image: 'https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?q=80&w=2070&auto=format&fit=crop' },
+                        { name: 'Shoes', image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2070&auto=format&fit=crop' },
+                        { name: 'Watches', image: 'https://images.unsplash.com/photo-1524592094714-0f0654e20314?q=80&w=1999&auto=format&fit=crop' },
+                        { name: 'Glasses', image: 'https://images.unsplash.com/photo-1577803645773-f96470509666?q=80&w=2070&auto=format&fit=crop' },
+                        { name: 'Perfume', image: 'https://images.unsplash.com/photo-1594035910387-fea4779426e9?q=80&w=2000&auto=format&fit=crop' },
+                        { name: 'Accessories', image: 'https://images.unsplash.com/photo-1511556820780-d912e42b4980?q=80&w=2000&auto=format&fit=crop' }
+                    ].map((cat) => (
+                        <div key={cat.name} className="card" style={{
+                            height: '250px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexDirection: 'column',
+                            cursor: 'pointer',
+                            backgroundImage: `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url(${cat.image})`,
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center',
+                            color: 'white',
+                            textShadow: '0 2px 4px rgba(0,0,0,0.5)',
+                            transition: 'all 0.3s ease',
+                            border: 'none',
+                            borderRadius: '12px',
+                            overflow: 'hidden',
+                            boxShadow: '0 4px 15px rgba(0,0,0,0.1)'
+                        }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.transform = 'translateY(-5px)';
+                                e.currentTarget.style.boxShadow = '0 10px 25px rgba(0,0,0,0.2)';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.transform = 'translateY(0)';
+                                e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,0,0,0.1)';
+                            }}
+                        >
+                            <h3 style={{
+                                fontSize: '2rem',
+                                marginBottom: '0.75rem',
+                                fontWeight: '700',
+                                letterSpacing: '1px',
+                                textTransform: 'uppercase'
+                            }}>{cat.name}</h3>
+                            <Link
+                                to={`/shop?category=${cat.name}`}
+                                className="btn"
+                                style={{
+                                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                                    color: '#000',
+                                    border: 'none',
+                                    padding: '0.6rem 1.8rem',
+                                    fontWeight: '600',
+                                    fontSize: '0.9rem',
+                                    textTransform: 'uppercase',
+                                    letterSpacing: '1.5px',
+                                    borderRadius: '50px',
+                                    transition: 'background-color 0.2s',
+                                    textDecoration: 'none'
+                                }}
+                                onMouseEnter={(e) => e.target.style.backgroundColor = '#fff'}
+                                onMouseLeave={(e) => e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.9)'}
+                            >
+                                Explore
+                            </Link>
                         </div>
                     ))}
                 </div>

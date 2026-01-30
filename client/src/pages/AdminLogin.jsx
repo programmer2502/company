@@ -14,19 +14,19 @@ const AdminLogin = () => {
             await adminLogin(username, password);
             navigate('/admin');
         } catch (err) {
-            alert('Host login failed. Ensure you have admin privileges.');
+            alert('Admin login failed. Ensure you have admin privileges.');
         }
     };
 
     return (
         <div className="container" style={{ maxWidth: '400px', marginTop: '5rem' }}>
             <div className="card" style={{ borderColor: 'var(--color-primary)' }}>
-                <h2 style={{ textAlign: 'center', marginBottom: '0.5rem', color: 'var(--color-primary)' }}>Host Access</h2>
+                <h2 style={{ textAlign: 'center', marginBottom: '0.5rem', color: 'var(--color-primary)' }}>Admin Login</h2>
                 <p style={{ textAlign: 'center', marginBottom: '2rem', color: '#666' }}>Authorized Personnel Only</p>
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                     <input
                         type="text"
-                        placeholder="Host Username"
+                        placeholder="Username"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                         required
@@ -38,7 +38,7 @@ const AdminLogin = () => {
                         onChange={(e) => setPassword(e.target.value)}
                         required
                     />
-                    <button type="submit" className="btn btn-outline">Login as Host</button>
+                    <button type="submit" className="btn btn-outline">Login</button>
                 </form>
             </div>
         </div>
