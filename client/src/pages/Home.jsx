@@ -27,11 +27,11 @@ const Home = () => {
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
                     {[
                         { name: 'Clothing', image: 'https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?q=80&w=2070&auto=format&fit=crop' },
-                        { name: 'Shoes', image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2070&auto=format&fit=crop' },
-                        { name: 'Watches', image: 'https://images.unsplash.com/photo-1524592094714-0f0654e20314?q=80&w=1999&auto=format&fit=crop' },
+                        { name: 'Shoes', image: './img2.jpeg' },
+                        { name: 'Watches', image: './img.jpeg' },
                         { name: 'Glasses', image: 'https://images.unsplash.com/photo-1577803645773-f96470509666?q=80&w=2070&auto=format&fit=crop' },
-                        { name: 'Perfume', image: 'https://images.unsplash.com/photo-1594035910387-fea4779426e9?q=80&w=2000&auto=format&fit=crop' },
-                        { name: 'Accessories', image: 'https://images.unsplash.com/photo-1511556820780-d912e42b4980?q=80&w=2000&auto=format&fit=crop' }
+                        { name: 'Perfume', image: 'img1.jpeg' },
+                        { name: 'Accessories', image: 'img3.jpeg' }
                     ].map((cat) => (
                         <div key={cat.name} className="card" style={{
                             height: '250px',

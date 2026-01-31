@@ -26,8 +26,8 @@ const Navbar = () => {
             zIndex: 100
         }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 2rem', maxWidth: '100%' }}>
-                <Link to="/" style={{ fontSize: '1.5rem', fontFamily: 'var(--font-display)', fontWeight: 'bold', color: 'var(--color-primary)' }}>
-                    MANNER THE WAY OF STYLE
+                <Link to="/" style={{ fontSize: '1.5rem',  fontFamily: 'var(--font-display)', fontWeight: 'bold', color: 'var(--color-primary)' }}>
+                   <span className="textTitle"> MANNER THE WAY OF STYLE</span>
                 </Link>
 
                 {/* Desktop Menu - Hidden on Admin Page */}

@@ -359,13 +359,21 @@ const AdminDashboard = () => {
                             onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
                             required
                         />
-                        <input
-                            type="text"
-                            placeholder="Category (e.g. Clothing, Shoes)"
+                    
+                         <select
                             value={newItem.category}
-                            onChange={(e) => setNewItem({ ...newItem, category: e.target.value })}
-                            required
-                        />
+                            onChange={(e) => ssetNewItem({ ...newItem, category: e.target.value })}
+                            style={{ padding: '0.8rem', borderRadius: '4px', border: '1px solid #ccc' }}
+                        >
+                            <option value="All">All Categories</option>
+                            <option value="Clothing">Clothing</option>
+                            <option value="Shoes">Shoes</option>
+                            <option value="Watches">Watches</option>
+                            <option value="Glasses">Glasses</option>
+                            <option value="Perfume">Perfume</option>
+                            <option value="Accessories">Accessories</option>
+                        </select>
+
                         <div style={{ display: 'flex', gap: '1rem' }}>
                             <input
                                 type="number"
