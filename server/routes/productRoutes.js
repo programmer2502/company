@@ -5,7 +5,8 @@ const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const path = require('path');
 
-const ImageKit = require('imagekit');
+const ImageKit = require('@imagekit/nodejs');
+
 
 const imagekit = new ImageKit({
     publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
@@ -89,11 +90,18 @@ router.put('/:id', protect, admin, upload.single('image'), async (req, res) => {
         const updateData = { ...req.body };
 
         if (req.file) {
-            const uploadResponse = await imagekit.upload({
-                file: req.file.buffer,
-                fileName: req.file.originalname,
-                folder: '/products'
+            const upload = multer({
+                storage,
+                limits: { fileSize: 5 * 1024 * 1024 },
+                fileFilter: (req, file, cb) => {
+                    if (!file.mimetype.startsWith('image/')) {
+                        return cb(new Error('Only image files allowed'), false);
+                    }
+                    cb(null, true);
+                }
             });
+
+
             updateData.imageUrl = uploadResponse.url;
         }
 
