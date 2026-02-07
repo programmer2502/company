@@ -440,7 +440,7 @@ const AdminDashboard = () => {
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                         {item.product?.imageUrl && (
                                             <img
-                                                src={item.product.imageUrl.startsWith('http') ? item.product.imageUrl : `http://localhost:5000${item.product.imageUrl}`}
+                                                src={item.product.imageUrl.startsWith('http') ? item.product.imageUrl : `https://company-v2oe.onrender.com${item.product.imageUrl}`}
                                                 alt={item.product.name}
                                                 style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }}
                                             />
