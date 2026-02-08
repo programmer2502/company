@@ -20,7 +20,7 @@ const CartPage = () => {
                 message += `   Price: ₹${item.price}\n`;
                 if (item.imageUrl) {
                     // With ImageKit, it's always an HTTP URL. 
-                    const imgUrl = item.imageUrl.startsWith('http') ? item.imageUrl : `http://localhost:5000${item.imageUrl}`;
+                    const imgUrl = item.imageUrl.startsWith('http') ? item.imageUrl : `https://company-v2oe.onrender.com${item.imageUrl}`;
                     // WhatsApp preview works best with the direct link. Cleaning up display.
                     message += `   Image: ${imgUrl}\n`;
                 }
@@ -67,7 +67,7 @@ const CartPage = () => {
                             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                                 {item.imageUrl && (
                                     <img
-                                        src={item.imageUrl.startsWith('http') ? item.imageUrl : `http://localhost:5000${item.imageUrl}`}
+                                        src={item.imageUrl.startsWith('http') ? item.imageUrl : `https://company-v2oe.onrender.com${item.imageUrl}`}
                                         alt={item.name}
                                         style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '4px' }}
                                     />

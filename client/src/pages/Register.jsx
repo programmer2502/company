@@ -6,16 +6,22 @@ const Register = () => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
     const { register } = useContext(AuthContext);
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError('');
+        setLoading(true);
         try {
             await register(username, email, password);
             navigate('/login');
         } catch (err) {
-            alert('Registration failed');
+            setError(err.response?.data?.message || 'Registration failed');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -23,6 +29,7 @@ const Register = () => {
         <div className="container" style={{ maxWidth: '400px', marginTop: '5rem' }}>
             <div className="card">
                 <h2 style={{ textAlign: 'center', marginBottom: '2rem' }}>Create Account</h2>
+                {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                     <input
                         type="text"
@@ -45,7 +52,9 @@ const Register = () => {
                         onChange={(e) => setPassword(e.target.value)}
                         required
                     />
-                    <button type="submit" className="btn btn-primary">Sign Up</button>
+                    <button type="submit" className="btn btn-primary" disabled={loading}>
+                        {loading ? 'Signing Up...' : 'Sign Up'}
+                    </button>
                 </form>
             </div>
         </div>

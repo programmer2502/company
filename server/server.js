@@ -9,7 +9,14 @@ const app = express();
 
 // Middleware
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: '*', // Allow all origins for debugging
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// Health Check
+app.get('/', (req, res) => res.send('API is running'));
 
 // Database Connection
 mongoose.connect(process.env.MONGO_URI)

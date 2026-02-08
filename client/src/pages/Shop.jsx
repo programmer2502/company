@@ -65,7 +65,7 @@ const Shop = () => {
                             <div style={{ height: '300px', backgroundColor: '#f0f0f0', marginBottom: '1rem', overflow: 'hidden', borderRadius: '4px' }}>
                                 {product.imageUrl ? (
                                     <img
-                                        src={product.imageUrl.startsWith('http') ? product.imageUrl : `http://localhost:5000${product.imageUrl}`}
+                                        src={product.imageUrl.startsWith('http') ? product.imageUrl : `https://company-v2oe.onrender.com${product.imageUrl}`}
                                         alt={product.name}
                                         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                     />
