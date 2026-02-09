@@ -11,9 +11,14 @@ const CartPage = () => {
     const [showLoginModal, setShowLoginModal] = useState(false);
 
     const handleWhatsAppPayment = async () => {
+        // Open window immediately to avoid popup blockers (especially on iOS)
+        const newWindow = window.open('', '_blank');
+        if (newWindow) {
+            newWindow.document.write('Redirecting to WhatsApp...');
+        }
+
         try {
             // Construct WhatsApp message
-            // Construct WhatsApp message// Construct WhatsApp message// Construct WhatsApp message
             let message = `*New Order Request*\n\n`;
             cart.forEach((item, index) => {
                 message += `${index + 1}. ${item.name} (Qty: ${item.quantity})\n`;
@@ -37,13 +42,21 @@ const CartPage = () => {
 
             // Clear cart and redirect
             clearCart();
-            window.open(whatsappUrl, '_blank');
+
+            if (newWindow) {
+                newWindow.location.href = whatsappUrl;
+            } else {
+                // Fallback if window.open failed (though less likely if called synchronously)
+                window.location.href = whatsappUrl;
+            }
+
             setShowModal(true);
             setTimeout(() => {
                 setShowModal(false);
             }, 7000);
         } catch (err) {
             console.error(err);
+            if (newWindow) newWindow.close(); // Close the blank window if error
             setShowLoginModal(true);
         }
     };
