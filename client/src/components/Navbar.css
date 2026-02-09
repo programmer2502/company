@@ -1,0 +1,151 @@
+.navbar {
+    border-bottom: 1px solid var(--color-border);
+    padding: 1.5rem 0;
+    background-color: rgba(10, 10, 10, 0.8);
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 2rem;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.navbar-logo {
+    font-size: 1.5rem;
+    font-family: var(--font-display);
+    font-weight: bold;
+    color: var(--color-primary);
+    text-decoration: none;
+    z-index: 101;
+    /* Keep logo above mobile menu */
+}
+
+.navbar-menu {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+
+.navbar-menu a {
+    color: var(--color-text);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.navbar-menu a:hover {
+    color: var(--color-primary);
+}
+
+.navbar-actions {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.navbar-actions>a,
+.navbar-actions>button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--color-text);
+    cursor: pointer;
+    z-index: 101;
+    /* Keep toggle above mobile menu */
+    padding: 0;
+}
+
+.mobile-actions {
+    display: none;
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 1024px) {
+    .navbar-container {
+        padding: 0 1rem;
+    }
+
+    .navbar-menu {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 80vh;
+        background-color: #000000 !important;
+        /* Force black background */
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 2rem;
+        transform: translateY(-100%);
+        opacity: 0;
+        visibility: hidden;
+        /* Ensure it's not clickable or visible */
+        transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out, visibility 0.3s;
+        z-index: 100;
+        padding-top: 80px;
+        /* Space for the navbar header */
+    }
+
+    .navbar-menu.active {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .navbar-menu a {
+        font-size: 1.5rem;
+    }
+
+    .navbar-logo {
+        font-size: 1.25rem;
+        /* Slightly larger for better balance */
+        z-index: 101;
+        position: relative;
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+
+    .desktop-only {
+        display: none !important;
+    }
+
+    .mobile-actions {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.5rem;
+        margin-top: 1rem;
+        width: 100%;
+        padding-top: 2rem;
+        border-top: 1px solid var(--color-border);
+    }
+
+    .mobile-user-greeting {
+        color: var(--color-text-muted);
+        font-size: 1.2rem;
+    }
+
+    .mobile-logout {
+        background: none;
+        border: 1px solid var(--color-border);
+        color: var(--color-text);
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        font-size: 1rem;
+    }
+}
