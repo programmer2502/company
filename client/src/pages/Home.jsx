@@ -15,7 +15,7 @@ const Home = () => {
                 textAlign: 'center'
             }}>
                 <div>
-                    <h1 style={{ fontSize: '4rem', marginBottom: '1rem', letterSpacing: '2px' }}>DEFINE YOUR STYLE</h1>
+                    <h1 style={{ fontSize: '3rem', marginBottom: '1rem', letterSpacing: '2px' }}>DEFINE YOUR STYLE</h1>
                     <p style={{ fontSize: '1.2rem', color: '#e0e0e0', marginBottom: '2rem' }}>Premium Clothing, Shoes, Watches, Glasses & More</p>
                     <Link to="/shop" className="btn btn-primary" style={{ padding: '1rem 3rem', fontSize: '1rem' }}>SHOP NOW</Link>
                 </div>
