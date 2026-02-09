@@ -60,24 +60,24 @@ const CartPage = () => {
     return (
         <div className="container" style={{ padding: '3rem 0' }}>
             <h2 className="section-title">Shopping Bag</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '2rem' }}>
+            <div className="cart-layout">
                 <div>
                     {cart.map((item) => (
-                        <div key={item._id} className="card" style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <div key={item._id} className="card cart-item">
+                            <div className="cart-item-details">
                                 {item.imageUrl && (
                                     <img
                                         src={item.imageUrl.startsWith('http') ? item.imageUrl : `https://company-v2oe.onrender.com${item.imageUrl}`}
                                         alt={item.name}
-                                        style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '4px' }}
+                                        className="cart-item-image"
                                     />
                                 )}
-                                <div>
-                                    <h3 style={{ margin: 0, fontSize: '1.1rem' }}>{item.name}</h3>
+                                <div className="cart-item-info">
+                                    <h3>{item.name}</h3>
                                     <p style={{ color: '#888', margin: 0 }}>Qty: {item.quantity}</p>
                                 </div>
                             </div>
-                            <div style={{ textAlign: 'right' }}>
+                            <div className="cart-item-actions">
                                 <p>₹{item.price * item.quantity}</p>
                                 <button onClick={() => removeFromCart(item._id)} style={{ color: 'red', fontSize: '0.8rem', background: 'none' }}>Remove</button>
                             </div>
