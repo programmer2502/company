@@ -37,7 +37,13 @@ const CartPage = () => {
             const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
 
             // Create order in backend first to ensure user is logged in
-            const items = cart.map(c => ({ product: c._id, quantity: c.quantity, priceAtPurchase: c.price }));
+            const items = cart.map(c => ({
+                product: c._id,
+                quantity: c.quantity,
+                priceAtPurchase: c.price,
+                selectedSize: c.selectedSize,
+                selectedColor: c.selectedColor
+            }));
             await api.post('/orders', { items, totalAmount: total });
 
             // Clear cart and redirect
@@ -85,9 +91,16 @@ const CartPage = () => {
                                         className="cart-item-image"
                                     />
                                 )}
-                                <div className="cart-item-info">
-                                    <h3>{item.name}</h3>
-                                    <p style={{ color: '#888', margin: 0 }}>Qty: {item.quantity}</p>
+                                <div style={{ flex: 1 }}>
+                                    <h3 style={{ marginBottom: '0.5rem' }}>{item.name}</h3>
+                                    <p style={{ color: '#666', fontSize: '0.9rem' }}>Price: ₹{item.price}</p>
+                                    <p style={{ color: '#888', margin: '0.2rem 0' }}>Qty: {item.quantity}</p>
+                                    {(item.selectedColor || item.selectedSize) && (
+                                        <p style={{ color: '#888', fontSize: '0.8rem', marginTop: '0.2rem' }}>
+                                            {item.selectedColor && `Color: ${item.selectedColor} `}
+                                            {item.selectedSize && `Size: ${item.selectedSize}`}
+                                        </p>
+                                    )}
                                 </div>
                             </div>
                             <div className="cart-item-actions">

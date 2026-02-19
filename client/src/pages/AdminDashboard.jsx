@@ -9,12 +9,18 @@ const AdminDashboard = () => {
     const [stats, setStats] = useState({ totalSales: 0, orderCount: 0, lowStockItems: [] });
     const [products, setProducts] = useState([]);
     const [orders, setOrders] = useState([]);
-    const [newItem, setNewItem] = useState({ name: '', category: 'Clothing', price: '', stock: '', image: null, description: '' });
+    const [newItem, setNewItem] = useState({ name: '', category: 'Clothing', price: '', stock: '', images: [], description: '', colors: '', sizes: '' });
     const [searchTerm, setSearchTerm] = useState('');
     const [userSearchTerm, setUserSearchTerm] = useState('');
     const [filterCategory, setFilterCategory] = useState('All');
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [showOrderModal, setShowOrderModal] = useState(false);
+
+    // Edit Product State
+    const [editingProduct, setEditingProduct] = useState(null);
+    const [showEditModal, setShowEditModal] = useState(false);
+    const editFileInputRef = useRef(null);
+
     const fileInputRef = useRef(null);
 
     useEffect(() => {
@@ -59,14 +65,19 @@ const AdminDashboard = () => {
             formData.append('price', newItem.price);
             formData.append('stock', newItem.stock);
             formData.append('description', newItem.description);
-            if (newItem.image) {
-                formData.append('image', newItem.image);
+            formData.append('colors', newItem.colors || '');
+            formData.append('sizes', newItem.sizes || '');
+
+            if (newItem.images) {
+                for (let i = 0; i < newItem.images.length; i++) {
+                    formData.append('images', newItem.images[i]);
+                }
             }
 
             // Important: Send headers for multipart/form-data (axios usually handles this automatically with FormData)
             await api.post('/products', formData);
             alert('Product added successfully');
-            setNewItem({ name: '', category: 'Clothing', price: '', stock: '', image: null, description: '' });
+            setNewItem({ name: '', category: 'Clothing', price: '', stock: '', images: [], description: '', colors: '', sizes: '' });
             if (fileInputRef.current) fileInputRef.current.value = '';
             fetchProducts();
         } catch (err) {
@@ -94,6 +105,57 @@ const AdminDashboard = () => {
             } catch (err) {
                 alert('Failed to delete product');
             }
+        }
+    };
+
+    const handleEditProduct = (product) => {
+        setEditingProduct({
+            ...product,
+            // Ensure colors/sizes are strings for the input fields
+            colors: Array.isArray(product.colors) ? product.colors.join(', ') : product.colors,
+            sizes: Array.isArray(product.sizes) ? product.sizes.join(', ') : product.sizes,
+            // Keep track of existing images separately from new uploads
+            existingImages: product.images && product.images.length > 0 ? product.images : (product.imageUrl ? [product.imageUrl] : []),
+            newImages: []
+        });
+        setShowEditModal(true);
+    };
+
+    const handleUpdateProduct = async (e) => {
+        e.preventDefault();
+        try {
+            const formData = new FormData();
+            formData.append('name', editingProduct.name);
+            formData.append('category', editingProduct.category);
+            formData.append('price', editingProduct.price);
+            formData.append('stock', editingProduct.stock);
+            formData.append('description', editingProduct.description);
+            formData.append('colors', editingProduct.colors || '');
+            formData.append('sizes', editingProduct.sizes || '');
+
+            // Append existing images
+            if (editingProduct.existingImages && editingProduct.existingImages.length > 0) {
+                editingProduct.existingImages.forEach(img => {
+                    formData.append('existingImages', img);
+                });
+            }
+
+            // Append new images
+            if (editingProduct.newImages && editingProduct.newImages.length > 0) {
+                for (let i = 0; i < editingProduct.newImages.length; i++) {
+                    formData.append('images', editingProduct.newImages[i]);
+                }
+            }
+
+            await api.put(`/products/${editingProduct._id}`, formData);
+            alert('Product updated successfully');
+            setShowEditModal(false);
+            setEditingProduct(null);
+            fetchProducts();
+            fetchStats();
+        } catch (err) {
+            console.error(err);
+            alert('Failed to update product');
         }
     };
 
@@ -175,25 +237,33 @@ const AdminDashboard = () => {
                         </div>
                     </div>
 
-                    <div className="card" style={{ marginBottom: '3rem', height: '400px' }}>
-                        <h3>Sales Trends (Last 7 Days)</h3>
-                        <ResponsiveContainer width="100%" height="100%">
-                            <BarChart
-                                data={stats.salesTrend || []}
-                                margin={{
-                                    top: 20,
-                                    right: 30,
-                                    left: 20,
-                                    bottom: 5,
-                                }}
-                            >
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="name" />
-                                <YAxis />
-                                <Tooltip />
-                                <Bar dataKey="sales" fill="var(--color-primary)" />
-                            </BarChart>
-                        </ResponsiveContainer>
+                    <div className="card" style={{ marginBottom: '3rem', height: '400px', display: 'flex', flexDirection: 'column' }}>
+                        <h3 style={{ marginBottom: '1rem' }}>Sales Trends (Last 7 Days)</h3>
+                        <div style={{ flex: 1, minHeight: 0, minWidth: 0, width: '100%', position: 'relative' }}>
+                            {stats.salesTrend && stats.salesTrend.length > 0 ? (
+                                <ResponsiveContainer width="100%" height="100%" debounce={50}>
+                                    <BarChart
+                                        data={stats.salesTrend}
+                                        margin={{
+                                            top: 20,
+                                            right: 30,
+                                            left: 20,
+                                            bottom: 5,
+                                        }}
+                                    >
+                                        <CartesianGrid strokeDasharray="3 3" />
+                                        <XAxis dataKey="name" />
+                                        <YAxis />
+                                        <Tooltip />
+                                        <Bar dataKey="sales" fill="var(--color-primary)" />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            ) : (
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#666' }}>
+                                    No sales data available
+                                </div>
+                            )}
+                        </div>
                     </div>
 
                     <h3>Low Stock Items</h3>
@@ -323,6 +393,26 @@ const AdminDashboard = () => {
                                 <div key={product._id} className="card">
                                     <h4>{product.name}</h4>
                                     <p style={{ color: '#888' }}>{product.category}</p>
+                                    <div style={{ marginTop: '0.5rem', marginBottom: '0.5rem', display: 'flex', gap: '0.5rem', overflowX: 'auto', paddingBottom: '0.5rem' }}>
+                                        {product.images && product.images.length > 0 ? (
+                                            product.images.map((imgUrl, idx) => (
+                                                <img
+                                                    key={idx}
+                                                    src={imgUrl.startsWith('http') ? imgUrl : `https://company-v2oe.onrender.com${imgUrl}`}
+                                                    alt={`${product.name} ${idx + 1}`}
+                                                    style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '4px', flexShrink: 0 }}
+                                                />
+                                            ))
+                                        ) : (
+                                            product.imageUrl && (
+                                                <img
+                                                    src={product.imageUrl.startsWith('http') ? product.imageUrl : `https://company-v2oe.onrender.com${product.imageUrl}`}
+                                                    alt={product.name}
+                                                    style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '4px' }}
+                                                />
+                                            )
+                                        )}
+                                    </div>
                                     <div style={{ marginTop: '1rem' }}>
                                         <label style={{ fontSize: '0.9rem', color: '#aaa' }}>Stock Level:</label>
                                         <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
@@ -333,6 +423,13 @@ const AdminDashboard = () => {
                                                 style={{ width: '80px', padding: '0.5rem' }}
                                             />
                                             <button className="btn btn-outline" style={{ padding: '0.5rem' }} disabled>Autosaved</button>
+                                            <button
+                                                onClick={() => handleEditProduct(product)}
+                                                className="btn"
+                                                style={{ padding: '0.5rem', backgroundColor: '#e0f2fe', color: '#0369a1', border: '1px solid #0369a1' }}
+                                            >
+                                                <Edit size={16} />
+                                            </button>
                                             <button
                                                 onClick={() => handleDeleteProduct(product._id)}
                                                 className="btn"
@@ -359,10 +456,10 @@ const AdminDashboard = () => {
                             onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
                             required
                         />
-                    
-                         <select
+
+                        <select
                             value={newItem.category}
-                            onChange={(e) => ssetNewItem({ ...newItem, category: e.target.value })}
+                            onChange={(e) => setNewItem({ ...newItem, category: e.target.value })}
                             style={{ padding: '0.8rem', borderRadius: '4px', border: '1px solid #ccc' }}
                         >
                             <option value="All">All Categories</option>
@@ -390,13 +487,110 @@ const AdminDashboard = () => {
                                 required
                             />
                         </div>
+
                         <input
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) => setNewItem({ ...newItem, image: e.target.files[0] })}
-                            ref={fileInputRef}
-                            required
+                            type="text"
+                            placeholder="Colors (comma separated, e.g., Red, Blue)"
+                            value={newItem.colors || ''}
+                            onChange={(e) => setNewItem({ ...newItem, colors: e.target.value })}
                         />
+
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                            <label style={{ fontSize: '0.9rem', color: '#666' }}>Available Sizes</label>
+                            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                                {['S', 'M', 'L', 'XL', 'XXL'].map(size => (
+                                    <label key={size} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                                        <input
+                                            type="checkbox"
+                                            checked={newItem.sizes ? newItem.sizes.split(', ').includes(size) : false}
+                                            onChange={(e) => {
+                                                const currentSizes = newItem.sizes ? newItem.sizes.split(', ').filter(s => s) : [];
+                                                let newSizes;
+                                                if (e.target.checked) {
+                                                    newSizes = [...currentSizes, size];
+                                                } else {
+                                                    newSizes = currentSizes.filter(s => s !== size);
+                                                }
+                                                // Sort based on standard size order if needed, or just join
+                                                const sizeOrder = ['S', 'M', 'L', 'XL', 'XXL'];
+                                                newSizes.sort((a, b) => sizeOrder.indexOf(a) - sizeOrder.indexOf(b));
+
+                                                setNewItem({ ...newItem, sizes: newSizes.join(', ') });
+                                            }}
+                                        />
+                                        {size}
+                                    </label>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                            <label style={{ fontSize: '0.9rem', color: '#666' }}>Product Images (Select multiple, max 5)</label>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                multiple
+                                onChange={(e) => {
+                                    if (e.target.files) {
+                                        const newFiles = Array.from(e.target.files);
+                                        setNewItem(prev => {
+                                            const currentImages = prev.images || [];
+                                            const combinedImages = [...currentImages, ...newFiles];
+                                            if (combinedImages.length > 5) {
+                                                alert('You can only upload a maximum of 5 images.');
+                                                return prev;
+                                            }
+                                            return { ...prev, images: combinedImages };
+                                        });
+                                        // Reset input to allow selecting the same file again if needed
+                                        e.target.value = '';
+                                    }
+                                }}
+                                ref={fileInputRef}
+                            // Remove required if we want to allow adding images later, or keep it but check array length validation manually
+                            />
+                            {newItem.images && newItem.images.length > 0 && (
+                                <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem', overflowX: 'auto' }}>
+                                    {newItem.images.map((file, idx) => (
+                                        <div key={idx} style={{ position: 'relative' }}>
+                                            <img
+                                                src={URL.createObjectURL(file)}
+                                                alt="Preview"
+                                                style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '4px' }}
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setNewItem(prev => ({
+                                                        ...prev,
+                                                        images: prev.images.filter((_, i) => i !== idx)
+                                                    }));
+                                                }}
+                                                style={{
+                                                    position: 'absolute',
+                                                    top: '-5px',
+                                                    right: '-5px',
+                                                    background: 'red',
+                                                    color: 'white',
+                                                    border: 'none',
+                                                    borderRadius: '50%',
+                                                    width: '18px',
+                                                    height: '18px',
+                                                    fontSize: '12px',
+                                                    cursor: 'pointer',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center'
+                                                }}
+                                            >
+                                                x
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
                         <textarea
                             placeholder="Description"
                             value={newItem.description}
@@ -445,7 +639,11 @@ const AdminDashboard = () => {
                                                 style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }}
                                             />
                                         )}
-                                        <span>{item.product?.name} (x{item.quantity})</span>
+                                        <span>
+                                            {item.product?.name} (x{item.quantity})
+                                            {item.selectedSize && <span style={{ marginLeft: '0.5rem', fontSize: '0.85rem', color: '#666', backgroundColor: '#f3f4f6', padding: '0.1rem 0.4rem', borderRadius: '4px' }}>Size: {item.selectedSize}</span>}
+                                            {item.selectedColor && <span style={{ marginLeft: '0.5rem', fontSize: '0.85rem', color: '#666', backgroundColor: '#f3f4f6', padding: '0.1rem 0.4rem', borderRadius: '4px' }}>Color: {item.selectedColor}</span>}
+                                        </span>
                                     </div>
                                     <span>₹{item.priceAtPurchase || item.product?.price}</span>
                                 </li>
@@ -475,6 +673,177 @@ const AdminDashboard = () => {
                             </div>
                         </div>
                     </div>
+                </Modal>
+            )}
+
+            {editingProduct && (
+                <Modal
+                    isOpen={showEditModal}
+                    onClose={() => setShowEditModal(false)}
+                    title="Edit Product"
+                >
+                    <form onSubmit={handleUpdateProduct} encType="multipart/form-data" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                        <input
+                            type="text"
+                            placeholder="Product Name"
+                            value={editingProduct.name}
+                            onChange={(e) => setEditingProduct({ ...editingProduct, name: e.target.value })}
+                            required
+                        />
+
+                        <select
+                            value={editingProduct.category}
+                            onChange={(e) => setEditingProduct({ ...editingProduct, category: e.target.value })}
+                            style={{ padding: '0.8rem', borderRadius: '4px', border: '1px solid #ccc' }}
+                        >
+                            <option value="All">All Categories</option>
+                            <option value="Clothing">Clothing</option>
+                            <option value="Shoes">Shoes</option>
+                            <option value="Watches">Watches</option>
+                            <option value="Glasses">Glasses</option>
+                            <option value="Perfume">Perfume</option>
+                            <option value="Accessories">Accessories</option>
+                        </select>
+
+                        <div style={{ display: 'flex', gap: '1rem' }}>
+                            <input
+                                type="number"
+                                placeholder="Price"
+                                value={editingProduct.price}
+                                onChange={(e) => setEditingProduct({ ...editingProduct, price: e.target.value })}
+                                required
+                            />
+                            <input
+                                type="number"
+                                placeholder="Stock"
+                                value={editingProduct.stock}
+                                onChange={(e) => setEditingProduct({ ...editingProduct, stock: e.target.value })}
+                                required
+                            />
+                        </div>
+
+                        <input
+                            type="text"
+                            placeholder="Colors (comma separated)"
+                            value={editingProduct.colors}
+                            onChange={(e) => setEditingProduct({ ...editingProduct, colors: e.target.value })}
+                        />
+
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                            <label style={{ fontSize: '0.9rem', color: '#666' }}>Available Sizes</label>
+                            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                                {['S', 'M', 'L', 'XL', 'XXL'].map(size => (
+                                    <label key={size} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                                        <input
+                                            type="checkbox"
+                                            checked={editingProduct.sizes ? editingProduct.sizes.split(', ').includes(size) : false}
+                                            onChange={(e) => {
+                                                const currentSizes = editingProduct.sizes ? editingProduct.sizes.split(', ').filter(s => s) : [];
+                                                let newSizes;
+                                                if (e.target.checked) {
+                                                    newSizes = [...currentSizes, size];
+                                                } else {
+                                                    newSizes = currentSizes.filter(s => s !== size);
+                                                }
+                                                const sizeOrder = ['S', 'M', 'L', 'XL', 'XXL'];
+                                                newSizes.sort((a, b) => sizeOrder.indexOf(a) - sizeOrder.indexOf(b));
+                                                setEditingProduct({ ...editingProduct, sizes: newSizes.join(', ') });
+                                            }}
+                                        />
+                                        {size}
+                                    </label>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                            <label style={{ fontSize: '0.9rem', color: '#666' }}>Existing Images (Click 'x' to remove)</label>
+                            <div style={{ display: 'flex', gap: '0.5rem', overflowX: 'auto', paddingBottom: '0.5rem' }}>
+                                {editingProduct.existingImages && editingProduct.existingImages.map((img, idx) => (
+                                    <div key={idx} style={{ position: 'relative', flexShrink: 0 }}>
+                                        <img
+                                            src={img.startsWith('http') ? img : `http://localhost:5000${img}`}
+                                            alt={`Existing ${idx}`}
+                                            style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '4px' }}
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setEditingProduct(prev => ({
+                                                    ...prev,
+                                                    existingImages: prev.existingImages.filter((_, i) => i !== idx)
+                                                }));
+                                            }}
+                                            style={{
+                                                position: 'absolute', top: '-5px', right: '-5px',
+                                                background: 'red', color: 'white', border: 'none',
+                                                borderRadius: '50%', width: '18px', height: '18px',
+                                                fontSize: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center'
+                                            }}
+                                        >
+                                            x
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <label style={{ fontSize: '0.9rem', color: '#666', marginTop: '0.5rem' }}>Add New Images</label>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                multiple
+                                onChange={(e) => {
+                                    if (e.target.files) {
+                                        const newFiles = Array.from(e.target.files);
+                                        setEditingProduct(prev => ({
+                                            ...prev,
+                                            newImages: [...(prev.newImages || []), ...newFiles]
+                                        }));
+                                        e.target.value = '';
+                                    }
+                                }}
+                                ref={editFileInputRef}
+                            />
+                            {editingProduct.newImages && editingProduct.newImages.length > 0 && (
+                                <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem', overflowX: 'auto' }}>
+                                    {editingProduct.newImages.map((file, idx) => (
+                                        <div key={idx} style={{ position: 'relative' }}>
+                                            <img
+                                                src={URL.createObjectURL(file)}
+                                                alt="New Preview"
+                                                style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '4px' }}
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setEditingProduct(prev => ({
+                                                        ...prev,
+                                                        newImages: prev.newImages.filter((_, i) => i !== idx)
+                                                    }));
+                                                }}
+                                                style={{
+                                                    position: 'absolute', top: '-5px', right: '-5px',
+                                                    background: 'red', color: 'white', border: 'none',
+                                                    borderRadius: '50%', width: '18px', height: '18px',
+                                                    fontSize: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center'
+                                                }}
+                                            >
+                                                x
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
+                        <textarea
+                            placeholder="Description"
+                            value={editingProduct.description}
+                            onChange={(e) => setEditingProduct({ ...editingProduct, description: e.target.value })}
+                            rows={4}
+                        />
+                        <button type="submit" className="btn btn-primary">Save Changes</button>
+                    </form>
                 </Modal>
             )}
         </div>

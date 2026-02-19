@@ -4,6 +4,7 @@ import api from '../api';
 import { CartContext } from '../context/CartContext';
 import { Search, CheckCircle } from 'lucide-react';
 import Modal from '../components/Modal';
+import ProductCard from '../components/ProductCard';
 
 const Shop = () => {
     const [products, setProducts] = useState([]);
@@ -57,34 +58,13 @@ const Shop = () => {
                 </div>
             </div>
 
+
+
             <div className="grid-products">
                 {products
                     .filter(product => product.name.toLowerCase().includes(searchTerm.toLowerCase()))
                     .map((product) => (
-                        <div key={product._id} className="card">
-                            <div style={{ height: '300px', backgroundColor: '#f0f0f0', marginBottom: '1rem', overflow: 'hidden', borderRadius: '4px' }}>
-                                {product.imageUrl ? (
-                                    <img
-                                        src={product.imageUrl.startsWith('http') ? product.imageUrl : `https://company-v2oe.onrender.com${product.imageUrl}`}
-                                        alt={product.name}
-                                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                                    />
-                                ) : (
-                                    <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#888' }}>
-                                        No Image
-                                    </div>
-                                )}
-                            </div>
-                            <h3 style={{ fontSize: '1.2rem', marginBottom: '0.5rem' }}>{product.name}</h3>
-                            <p style={{ color: 'var(--color-primary)', fontSize: '1.1rem', fontWeight: 'bold' }}>₹{product.price}</p>
-                            <button
-                                className="btn btn-primary"
-                                style={{ width: '100%', marginTop: '1rem' }}
-                                onClick={() => handleAddToCart(product)}
-                            >
-                                Add to Cart
-                            </button>
-                        </div>
+                        <ProductCard key={product._id} product={product} />
                     ))}
             </div>
             {products.length === 0 && <p style={{ textAlign: 'center', color: '#666' }}>No products found.</p>}
