@@ -498,7 +498,7 @@ const AdminDashboard = () => {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                             <label style={{ fontSize: '0.9rem', color: '#666' }}>Available Sizes</label>
                             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-                                {['S', 'M', 'L', 'XL', 'XXL'].map(size => (
+                                {(newItem.category === 'Shoes' ? ['5', '6', '7', '8', '9', '10', '11', '12'] : ['S', 'M', 'L', 'XL', 'XXL']).map(size => (
                                     <label key={size} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
                                         <input
                                             type="checkbox"
@@ -512,7 +512,11 @@ const AdminDashboard = () => {
                                                     newSizes = currentSizes.filter(s => s !== size);
                                                 }
                                                 // Sort based on standard size order if needed, or just join
-                                                const sizeOrder = ['S', 'M', 'L', 'XL', 'XXL'];
+                                                const sizeOrder = newItem.category === 'Shoes'
+                                                    ? ['5', '6', '7', '8', '9', '10', '11', '12']
+                                                    : ['S', 'M', 'L', 'XL', 'XXL'];
+
+                                                // Custom sort to handle mixed types if necessary, but strictly adhering to category helps
                                                 newSizes.sort((a, b) => sizeOrder.indexOf(a) - sizeOrder.indexOf(b));
 
                                                 setNewItem({ ...newItem, sizes: newSizes.join(', ') });
@@ -732,7 +736,7 @@ const AdminDashboard = () => {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                             <label style={{ fontSize: '0.9rem', color: '#666' }}>Available Sizes</label>
                             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-                                {['S', 'M', 'L', 'XL', 'XXL'].map(size => (
+                                {(editingProduct.category === 'Shoes' ? ['5', '6', '7', '8', '9', '10', '11', '12'] : ['S', 'M', 'L', 'XL', 'XXL']).map(size => (
                                     <label key={size} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
                                         <input
                                             type="checkbox"
@@ -745,7 +749,9 @@ const AdminDashboard = () => {
                                                 } else {
                                                     newSizes = currentSizes.filter(s => s !== size);
                                                 }
-                                                const sizeOrder = ['S', 'M', 'L', 'XL', 'XXL'];
+                                                const sizeOrder = editingProduct.category === 'Shoes'
+                                                    ? ['5', '6', '7', '8', '9', '10', '11', '12']
+                                                    : ['S', 'M', 'L', 'XL', 'XXL'];
                                                 newSizes.sort((a, b) => sizeOrder.indexOf(a) - sizeOrder.indexOf(b));
                                                 setEditingProduct({ ...editingProduct, sizes: newSizes.join(', ') });
                                             }}
