@@ -762,7 +762,7 @@ const AdminDashboard = () => {
                                 {editingProduct.existingImages && editingProduct.existingImages.map((img, idx) => (
                                     <div key={idx} style={{ position: 'relative', flexShrink: 0 }}>
                                         <img
-                                            src={img.startsWith('http') ? img : `http://localhost:5000${img}`}
+                                            src={img.startsWith('http') ? img : `https://company-v2oe.onrender.com${img}`}
                                             alt={`Existing ${idx}`}
                                             style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '4px' }}
                                         />

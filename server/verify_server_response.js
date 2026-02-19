@@ -3,7 +3,7 @@ const axios = require('axios');
 async function verify() {
     try {
         const id = '699618994970df10cba43cbd';
-        const url = `http://localhost:5000/api/products?_id=${id}`;
+        const url = `https://company-v2oe.onrender.com/api/products?_id=${id}`;
         console.log(`Fetching ${url}...`);
         const res = await axios.get(url);
         const product = Array.isArray(res.data) ? res.data[0] : res.data;

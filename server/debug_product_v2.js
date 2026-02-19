@@ -2,7 +2,7 @@ const axios = require('axios');
 
 async function fetchProduct() {
     try {
-        const response = await axios.get('http://localhost:5000/api/products?_id=699618994970df10cba43cbd');
+        const response = await axios.get('https://company-v2oe.onrender.com/api/products?_id=699618994970df10cba43cbd');
         const product = Array.isArray(response.data) ? response.data[0] : response.data;
 
         console.log('Product Name:', product.name);
