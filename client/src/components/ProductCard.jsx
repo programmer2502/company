@@ -43,7 +43,7 @@ const ProductCard = ({ product }) => {
 
                 {/* Mini Image Blocks */}
                 {product.images && product.images.length > 0 && (
-                    <div style={{ display: 'flex', gap: '0.5rem', overflowX: 'auto', paddingBottom: '0.5rem', marginTop: '0.5rem' }}>
+                    <div style={{ display: 'flex', gap: '0.5rem',overflowX: 'auto', paddingBottom: '0.5rem', margin: '0.5rem' }}>
                         {(product.images.length > 0 ? product.images : [product.imageUrl]).slice(0, 5).map((img, idx) => (
                             <img
                                 key={idx}
@@ -98,10 +98,11 @@ const ProductCard = ({ product }) => {
                     textDecoration: 'none',
                     padding: '10px',
                     fontWeight: 'bold',
-                    backgroundColor: isHovered ? '#000' : 'var(--color-primary)',
+                     border: isHovered ? 'var(--color-primary)':"",
+                    backgroundColor: isHovered ? 'black' : 'var(--color-primary)',
                     color: isHovered ? 'var(--color-primary)' : '#000',
-                    transition: 'all 0.3s ease',
-                    borderRadius: '50px'
+                    borderRadius: '50px',
+                    boxShadow:isHovered? '0px 0 10px 1px var(--color-primary)':""
                 }}
             >
                 View Details

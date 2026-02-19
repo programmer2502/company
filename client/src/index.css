@@ -88,7 +88,8 @@ button {
 }
 
 .card {
-  box-shadow: 0px 0px 10px 2px blueviolet;
+  /* box-shadow: 0px 0px 10px 2px blueviolet; */
+  box-shadow: 0 0 4px 1px #FFD700;
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
   padding: 1.5rem;
@@ -97,7 +98,11 @@ button {
 }
 
 .card:hover {
-  box-shadow: 0px 0px 10px 2px rgb(207, 155, 255);
+  /* box-shadow: 0px 0px 10px 2px rgb(207, 155, 255); */
+  /* border-image: linear-gradient(45deg, #FFD700, #FFA500, #FFC107) 1; */
+  box-shadow:
+   0px 0px 14px 1px rgba(255, 215, 0, 0.4),
+    0px 0px 14px 1px rgba(255, 215, 0, 0.6);
   transform: translateY(-5px);
 }
 
@@ -127,7 +132,9 @@ textarea:focus {
 .grid-products {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 2rem;
+  /* gap: 2rem; */
+  row-gap:4rem ;
+  column-gap:1.9rem ;
 }
 
 .section-title {
