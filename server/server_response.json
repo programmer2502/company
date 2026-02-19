@@ -1,0 +1,21 @@
+{
+  "_id": "69960ee2a5962535832715f3",
+  "name": "s",
+  "category": "Clothing",
+  "price": 4,
+  "stock": 4,
+  "imageUrl": "https://ik.imagekit.io/jdnt570w7/products/IMG-20260214-WA0006_fFkPLWooZ.jpg",
+  "images": [
+    "https://ik.imagekit.io/jdnt570w7/products/IMG-20260214-WA0006_fFkPLWooZ.jpg"
+  ],
+  "colors": [
+    "Red"
+  ],
+  "sizes": [
+    "S"
+  ],
+  "description": "s",
+  "salesCount": 0,
+  "createdAt": "2026-02-18T19:11:30.411Z",
+  "__v": 0
+}

@@ -53,8 +53,11 @@ const admin = (req, res, next) => {
 // Get all products
 router.get('/', async (req, res) => {
     try {
-        const { category } = req.query;
-        const query = category ? { category } : {};
+        const { category, _id } = req.query;
+        const query = {};
+        if (category) query.category = category;
+        if (_id) query._id = _id;
+
         const products = await Product.find(query);
         res.json(products);
     } catch (err) {

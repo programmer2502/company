@@ -116,6 +116,34 @@ const ProductDetails = () => {
                         />
                     </div>
 
+
+
+                    {/* Thumbnails Gallery */}
+                    {images.length > 1 && (
+                        <div style={{ display: 'flex', gap: '1rem', overflowX: 'auto', paddingBottom: '0.5rem', justifyContent: 'center' }}>
+                            {images.map((img, index) => (
+                                <div
+                                    key={index}
+                                    onClick={() => setSelectedImage(img)}
+                                    style={{
+                                        width: '80px',
+                                        height: '80px',
+                                        borderRadius: '4px',
+                                        border: selectedImage === img ? '2px solid var(--color-primary)' : '1px solid #ddd',
+                                        cursor: 'pointer',
+                                        overflow: 'hidden',
+                                        flexShrink: 0
+                                    }}
+                                >
+                                    <img
+                                        src={img.startsWith('http') ? img : `http://localhost:5000${img}`}
+                                        alt={`${product.name} view ${index + 1}`}
+                                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
 
                 {/* Product Info */}
@@ -187,38 +215,12 @@ const ProductDetails = () => {
                         </div>
                     )}
 
+                    {/* Description  */}
                     <div style={{ marginBottom: '2rem' }}>
                         <p style={{ lineHeight: '1.6', color: '#444' }}>{product.description}</p>
                     </div>
 
-                    {images.length > 1 && (
-                        <div style={{ marginBottom: '2rem' }}>
-                            <h3 style={{ fontSize: '1rem', marginBottom: '0.5rem' }}>Images:</h3>
-                            <div style={{ display: 'flex', gap: '1rem', overflowX: 'auto', paddingBottom: '0.5rem' }}>
-                                {images.map((img, index) => (
-                                    <div
-                                        key={index}
-                                        onClick={() => setSelectedImage(img)}
-                                        style={{
-                                            width: '60px',
-                                            height: '60px',
-                                            borderRadius: '4px',
-                                            border: selectedImage === img ? '2px solid var(--color-primary)' : '1px solid #ddd',
-                                            cursor: 'pointer',
-                                            overflow: 'hidden',
-                                            flexShrink: 0
-                                        }}
-                                    >
-                                        <img
-                                            src={img.startsWith('http') ? img : `http://localhost:5000${img}`}
-                                            alt={`${product.name} view ${index + 1}`}
-                                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                                        />
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
+                    {/* Add to Cart Button moved here */}
 
                     <button
                         className="btn btn-primary"
@@ -272,7 +274,7 @@ const ProductDetails = () => {
                     </div>
                 </div>
             </Modal>
-        </div>
+        </div >
     );
 };
 

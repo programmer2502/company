@@ -9,7 +9,7 @@ const ProductCard = ({ product }) => {
     // Helper to handle image URLs
     const getImageUrl = (img) => {
         if (!img) return '';
-        return img.startsWith('http') ? img : `http://localhost:5000${img}`;
+        return img.startsWith('http') ? img : `https://company-v2oe.onrender.com${img}`;
     };
 
     const [isHovered, setIsHovered] = useState(false);
