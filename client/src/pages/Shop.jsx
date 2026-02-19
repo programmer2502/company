@@ -37,9 +37,9 @@ const Shop = () => {
 
     return (
         <div className="container" style={{ padding: '3rem 0' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+            <div className="shop-header">
                 <h2 className="section-title" style={{ marginBottom: 0 }}>{category ? `${category} Collection` : 'All Products'}</h2>
-                <div style={{ position: 'relative', width: '300px' }}>
+                <div className="search-container">
                     <Search size={20} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: '#888' }} />
                     <input
                         type="text"

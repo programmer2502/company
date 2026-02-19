@@ -15,9 +15,9 @@ const ProductCard = ({ product }) => {
     const [isHovered, setIsHovered] = useState(false);
 
     return (
-        <div className="card" style={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between', padding: '15px' }}>
-            <div>
-                <div style={{ height: '300px', backgroundColor: '#f0f0f0', marginBottom: '1rem', overflow: 'hidden', borderRadius: '4px', position: 'relative' }}>
+        <div className="card" style={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
+            <div className="product-card-content">
+                <div className="product-image-container">
                     {displayImage ? (
                         <img
                             src={getImageUrl(displayImage)}
@@ -38,12 +38,12 @@ const ProductCard = ({ product }) => {
                     )}
                 </div>
 
-                <h3 style={{ fontSize: '1.2rem', marginBottom: '0.5rem', fontWeight: 'bold' }}>{product.name}</h3>
-                <p style={{ color: 'var(--color-primary)', fontSize: '1.1rem', fontWeight: 'bold' }}>₹{product.price}</p>
+                <h3 className="product-title" style={{ fontSize: '1.2rem', marginBottom: '0.5rem', fontWeight: 'bold' }}>{product.name}</h3>
+                <p className="product-price" style={{ color: 'var(--color-primary)', fontSize: '1.1rem', fontWeight: 'bold' }}>₹{product.price}</p>
 
                 {/* Mini Image Blocks */}
                 {product.images && product.images.length > 0 && (
-                    <div style={{ display: 'flex', gap: '0.5rem',overflowX: 'auto', paddingBottom: '0.5rem', margin: '0.5rem' }}>
+                    <div style={{ display: 'flex', gap: '0.5rem', overflowX: 'auto', paddingBottom: '0.5rem', margin: '0.5rem 0' }}>
                         {(product.images.length > 0 ? product.images : [product.imageUrl]).slice(0, 5).map((img, idx) => (
                             <img
                                 key={idx}
@@ -69,7 +69,7 @@ const ProductCard = ({ product }) => {
                 )}
 
                 {/* Colors and Sizes */}
-                <div style={{ marginTop: '0.5rem', fontSize: '0.9rem', color: '#666' }}>
+                <div style={{ marginTop: 'auto', fontSize: '0.9rem', color: '#666' }}>
                     {product.colors && product.colors.length > 0 && (
                         <div style={{ marginBottom: '0.3rem', display: 'flex', alignItems: 'center', gap: '5px' }}>
                             <span style={{ color: '#888' }}>Colors: </span>
@@ -87,22 +87,22 @@ const ProductCard = ({ product }) => {
 
             <Link
                 to={`/product/${product._id}`}
-                className="btn"
+                className="btn product-btn"
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
                 style={{
                     width: '60%',
-                    margin: '1rem auto 0 auto',
+                    margin: '0 auto 1.5rem auto',
                     display: 'block',
                     textAlign: 'center',
                     textDecoration: 'none',
                     padding: '10px',
                     fontWeight: 'bold',
-                     border: isHovered ? 'var(--color-primary)':"",
+                    border: isHovered ? 'var(--color-primary)' : "",
                     backgroundColor: isHovered ? 'black' : 'var(--color-primary)',
                     color: isHovered ? 'var(--color-primary)' : '#000',
                     borderRadius: '50px',
-                    boxShadow:isHovered? '0px 0 10px 1px var(--color-primary)':""
+                    boxShadow: isHovered ? '0px 0 10px 1px var(--color-primary)' : ""
                 }}
             >
                 View Details

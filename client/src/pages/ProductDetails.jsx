@@ -94,7 +94,7 @@ const ProductDetails = () => {
                 <ArrowLeft size={16} style={{ marginRight: '0.5rem' }} /> Back to Shop
             </Link>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem' }}>
+            <div className="product-details-grid">
                 {/* Image Gallery */}
                 <div>
                     <div style={{
