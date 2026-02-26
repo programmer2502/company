@@ -1,5 +1,6 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useContext } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import api from '../api';
 import { CartContext } from '../context/CartContext';
 import { Search, CheckCircle } from 'lucide-react';
@@ -7,7 +8,6 @@ import Modal from '../components/Modal';
 import ProductCard from '../components/ProductCard';
 
 const Shop = () => {
-    const [products, setProducts] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [searchParams] = useSearchParams();
     const category = searchParams.get('category');
@@ -22,19 +22,20 @@ const Shop = () => {
         }, 7000);
     };
 
-    useEffect(() => {
-        const fetchProducts = async () => {
-            try {
-                const url = category ? `/products?category=${category}` : '/products';
-                const { data } = await api.get(url);
-                // The API now returns { products, total, page, pages }
-                setProducts(data.products || data);
-            } catch (err) {
-                console.error(err);
-            }
-        };
-        fetchProducts();
-    }, [category]);
+    const { data: response, isLoading, error } = useQuery({
+        queryKey: ['products', category],
+        queryFn: async () => {
+            const url = category ? `/products?category=${category}` : '/products';
+            const { data } = await api.get(url);
+            return data;
+        },
+        staleTime: 1000 * 60 * 5, // 5 minutes
+    });
+
+    const productsData = response?.products || response || [];
+
+    if (isLoading) return <p style={{ textAlign: 'center', padding: '3rem 0' }}>Loading products...</p>;
+    if (error) return <p style={{ textAlign: 'center', padding: '3rem 0', color: 'red' }}>Error: {error.message}</p>;
 
     return (
         <div className="container" style={{ padding: '3rem 0' }}>
@@ -62,13 +63,15 @@ const Shop = () => {
 
 
             <div className="grid-products">
-                {products
+                {isLoading ? (
+                    <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '2rem' }}>Loading Products...</div>
+                ) : productsData
                     .filter(product => product.name.toLowerCase().includes(searchTerm.toLowerCase()))
                     .map((product) => (
                         <ProductCard key={product._id} product={product} />
                     ))}
             </div>
-            {products.length === 0 && <p style={{ textAlign: 'center', color: '#666' }}>No products found.</p>}
+            {!isLoading && productsData.length === 0 && <p style={{ textAlign: 'center', color: '#666' }}>No products found.</p>}
 
             <Modal
                 isOpen={showModal}

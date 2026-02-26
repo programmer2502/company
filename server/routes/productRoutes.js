@@ -6,6 +6,7 @@ const multer = require('multer');
 const path = require('path');
 
 const ImageKit = require('@imagekit/nodejs');
+const cache = require('../utils/cache');
 
 
 const imagekit = new ImageKit({
@@ -50,18 +51,20 @@ const admin = (req, res, next) => {
     }
 };
 
-// Get all products (with pagination and projection)
+// Get all products (with pagination and projection and caching)
 router.get('/', async (req, res) => {
+    const { category, _id, page = 1, limit = 20 } = req.query;
+    const cacheKey = `products_${category || 'all'}_${_id || 'none'}_${page}_${limit}`;
+    const cachedData = cache.get(cacheKey);
+    if (cachedData) return res.json(cachedData);
+
     try {
-        const { category, _id, page = 1, limit = 20 } = req.query;
         const query = {};
         if (category) query.category = category;
         if (_id) query._id = _id;
 
         const skip = (parseInt(page) - 1) * parseInt(limit);
 
-        // Use projection to exclude 'description' in list view to save bandwidth
-        // Use .lean() for faster execution (returns POJO instead of Mongoose document)
         const products = await Product.find(query)
             .select('-description')
             .sort({ createdAt: -1 })
@@ -71,12 +74,15 @@ router.get('/', async (req, res) => {
 
         const total = await Product.countDocuments(query);
 
-        res.json({
+        const responseData = {
             products,
             total,
             page: parseInt(page),
             pages: Math.ceil(total / limit)
-        });
+        };
+
+        cache.set(cacheKey, responseData);
+        res.json(responseData);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -139,6 +145,7 @@ router.post('/', protect, admin, upload.array('images', 5), async (req, res) => 
         });
 
         await product.save();
+        cache.flushAll(); // Clear all cache on new product
         res.status(201).json(product);
     } catch (err) {
         console.error(err);
@@ -207,6 +214,7 @@ router.put('/:id', protect, admin, upload.array('images', 5), async (req, res) =
 
         // Note: We are overwriting images with whatever we constructed.
         const product = await Product.findByIdAndUpdate(req.params.id, updateData, { new: true });
+        cache.flushAll(); // Clear cache
         res.json(product);
     } catch (err) {
         console.error(err);
@@ -218,6 +226,7 @@ router.put('/:id', protect, admin, upload.array('images', 5), async (req, res) =
 router.delete('/:id', protect, admin, async (req, res) => {
     try {
         await Product.findByIdAndDelete(req.params.id);
+        cache.flushAll(); // Clear cache
         res.json({ message: 'Product deleted' });
     } catch (err) {
         res.status(500).json({ error: err.message });

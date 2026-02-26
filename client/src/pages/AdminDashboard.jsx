@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import api from '../api';
 import Modal from '../components/Modal';
 import { Package, TrendingUp, Plus, Edit, User, Eye, Truck } from 'lucide-react';
@@ -23,52 +24,46 @@ const AdminDashboard = () => {
 
     const fileInputRef = useRef(null);
 
-    const [isLoading, setIsLoading] = useState(true);
+    const { data: statsData, isLoading: statsLoading } = useQuery({
+        queryKey: ['admin_stats'],
+        queryFn: async () => {
+            const { data } = await api.get('/admin/stats');
+            return data;
+        },
+        staleTime: 1000 * 60 * 2, // 2 mins
+    });
+
+    const { data: productsResult, isLoading: productsLoading } = useQuery({
+        queryKey: ['admin_products'],
+        queryFn: async () => {
+            const { data } = await api.get('/products?limit=100');
+            return data;
+        },
+        staleTime: 1000 * 60 * 5,
+    });
+
+    const { data: ordersData, isLoading: ordersLoading } = useQuery({
+        queryKey: ['admin_orders'],
+        queryFn: async () => {
+            const { data } = await api.get('/admin/users-orders');
+            return data;
+        },
+        staleTime: 1000 * 60 * 2,
+    });
+
+    const productsData = productsResult?.products || productsResult || [];
+    const isLoading = statsLoading || productsLoading || ordersLoading;
+
+    // Use derived state for display
+    const [localStats, setLocalStats] = useState(null);
+    const [localProducts, setLocalProducts] = useState([]);
+    const [localOrders, setLocalOrders] = useState([]);
 
     useEffect(() => {
-        const fetchAllData = async () => {
-            setIsLoading(true);
-            try {
-                await Promise.all([
-                    fetchStats(),
-                    fetchProducts(),
-                    fetchOrders()
-                ]);
-            } catch (err) {
-                console.error("Error fetching dashboard data:", err);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-        fetchAllData();
-    }, []);
-
-    const fetchStats = async () => {
-        try {
-            const { data } = await api.get('/admin/stats');
-            setStats(data);
-        } catch (err) {
-            console.error(err);
-        }
-    };
-
-    const fetchProducts = async () => {
-        try {
-            const { data } = await api.get('/products?limit=100'); // Higher limit for admin
-            setProducts(data.products || data);
-        } catch (err) {
-            console.error(err);
-        }
-    };
-
-    const fetchOrders = async () => {
-        try {
-            const { data } = await api.get('/admin/users-orders');
-            setOrders(data);
-        } catch (err) {
-            console.error(err);
-        }
-    };
+        if (statsData) setStats(statsData);
+        if (productsData) setProducts(productsData);
+        if (ordersData) setOrders(ordersData);
+    }, [statsData, productsData, ordersData]);
 
     const handleAddItem = async (e) => {
         e.preventDefault();

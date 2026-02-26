@@ -6,10 +6,18 @@ const ProductCard = ({ product }) => {
     const initialImage = (product.images && product.images.length > 0) ? product.images[0] : product.imageUrl;
     const [displayImage, setDisplayImage] = useState(initialImage);
 
-    // Helper to handle image URLs
-    const getImageUrl = (img) => {
+    // Helper to handle image URLs and apply transformations for speed
+    const getImageUrl = (img, isThumbnail = false) => {
         if (!img) return '';
-        return img.startsWith('http') ? img : `https://company-v2oe.onrender.com${img}`;
+        let url = img.startsWith('http') ? img : `https://company-v2oe.onrender.com${img}`;
+
+        // Apply ImageKit transformations if applicable
+        if (url.includes('ik.imagekit.io')) {
+            const separator = url.includes('?') ? '&' : '?';
+            const transform = isThumbnail ? 'tr=w-50,h-50,cm-pad_resize' : 'tr=w-300,h-300,cm-pad_resize';
+            return `${url}${separator}${transform}`;
+        }
+        return url;
     };
 
     const [isHovered, setIsHovered] = useState(false);
@@ -45,7 +53,7 @@ const ProductCard = ({ product }) => {
                             {(product.images.length > 0 ? product.images : [product.imageUrl]).slice(0, 5).map((img, idx) => (
                                 <img
                                     key={idx}
-                                    src={getImageUrl(img)}
+                                    src={getImageUrl(img, true)}
                                     alt={`${product.name} ${idx}`}
                                     onClick={(e) => {
                                         e.preventDefault();
@@ -84,10 +92,10 @@ const ProductCard = ({ product }) => {
                 </div>
             </div>
             <div className="cardSubDesign">
-                <p className="product-price" style={{ 
-                    color: 'var(--color-primary)', 
-                    fontSize: '1.25rem', 
-                    fontWeight: '700' 
+                <p className="product-price" style={{
+                    color: 'var(--color-primary)',
+                    fontSize: '1.25rem',
+                    fontWeight: '700'
                 }}>
                     ₹{product.price}
                 </p>
