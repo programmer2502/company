@@ -3,6 +3,7 @@ const router = express.Router();
 const Order = require('../models/Order');
 const Product = require('../models/Product');
 const jwt = require('jsonwebtoken');
+const cache = require('../utils/cache');
 
 const protect = (req, res, next) => {
     const token = req.headers.authorization?.split(' ')[1];
@@ -22,6 +23,10 @@ const admin = (req, res, next) => {
 
 // Get Monthly Sales Stats
 router.get('/stats', protect, admin, async (req, res) => {
+    const cacheKey = 'admin_stats';
+    const cachedData = cache.get(cacheKey);
+    if (cachedData) return res.json(cachedData);
+
     try {
         const now = new Date();
         const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -66,13 +71,16 @@ router.get('/stats', protect, admin, async (req, res) => {
             });
         }
 
-        res.json({
+        const stats = {
             totalSales,
             orderCount,
             lowStockCount: lowStock.length,
             lowStockItems: lowStock,
             salesTrend
-        });
+        };
+
+        cache.set(cacheKey, stats);
+        res.json(stats);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -80,12 +88,18 @@ router.get('/stats', protect, admin, async (req, res) => {
 
 // Get Users and their Orders
 router.get('/users-orders', protect, admin, async (req, res) => {
+    const cacheKey = 'admin_users_orders';
+    const cachedData = cache.get(cacheKey);
+    if (cachedData) return res.json(cachedData);
+
     try {
         const orders = await Order.find()
             .populate('user', 'username email isBlocked')
             .populate('items.product', 'name price imageUrl')
             .sort({ createdAt: -1 })
             .lean(); // Use .lean() for faster processing
+
+        cache.set(cacheKey, orders);
         res.json(orders);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -108,6 +122,7 @@ router.put('/orders/:id/status', protect, admin, async (req, res) => {
             });
 
             await order.save();
+            cache.del(['admin_stats', 'admin_users_orders']); // Invalidate cache
 
             // Mock Email Notification
             console.log(`Sending email to customer: Your order #${order._id} is now ${status}`);
