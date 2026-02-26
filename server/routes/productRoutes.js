@@ -50,16 +50,33 @@ const admin = (req, res, next) => {
     }
 };
 
-// Get all products
+// Get all products (with pagination and projection)
 router.get('/', async (req, res) => {
     try {
-        const { category, _id } = req.query;
+        const { category, _id, page = 1, limit = 20 } = req.query;
         const query = {};
         if (category) query.category = category;
         if (_id) query._id = _id;
 
-        const products = await Product.find(query);
-        res.json(products);
+        const skip = (parseInt(page) - 1) * parseInt(limit);
+
+        // Use projection to exclude 'description' in list view to save bandwidth
+        // Use .lean() for faster execution (returns POJO instead of Mongoose document)
+        const products = await Product.find(query)
+            .select('-description')
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(parseInt(limit))
+            .lean();
+
+        const total = await Product.countDocuments(query);
+
+        res.json({
+            products,
+            total,
+            page: parseInt(page),
+            pages: Math.ceil(total / limit)
+        });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

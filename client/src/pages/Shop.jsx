@@ -27,7 +27,8 @@ const Shop = () => {
             try {
                 const url = category ? `/products?category=${category}` : '/products';
                 const { data } = await api.get(url);
-                setProducts(data);
+                // The API now returns { products, total, page, pages }
+                setProducts(data.products || data);
             } catch (err) {
                 console.error(err);
             }

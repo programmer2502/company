@@ -84,7 +84,8 @@ router.get('/users-orders', protect, admin, async (req, res) => {
         const orders = await Order.find()
             .populate('user', 'username email isBlocked')
             .populate('items.product', 'name price imageUrl')
-            .sort({ createdAt: -1 });
+            .sort({ createdAt: -1 })
+            .lean(); // Use .lean() for faster processing
         res.json(orders);
     } catch (err) {
         res.status(500).json({ error: err.message });

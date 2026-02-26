@@ -54,8 +54,8 @@ const AdminDashboard = () => {
 
     const fetchProducts = async () => {
         try {
-            const { data } = await api.get('/products');
-            setProducts(data);
+            const { data } = await api.get('/products?limit=100'); // Higher limit for admin
+            setProducts(data.products || data);
         } catch (err) {
             console.error(err);
         }
