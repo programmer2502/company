@@ -23,32 +23,52 @@ const admin = (req, res, next) => {
 // Get Monthly Sales Stats
 router.get('/stats', protect, admin, async (req, res) => {
     try {
-        const orders = await Order.find();
-        const lowStock = await Product.find({ stock: { $lt: 5 } });
-        // Simplified monthly calculation
-        const currentMonth = new Date().getMonth();
-        const monthlyOrders = orders.filter(o => new Date(o.createdAt).getMonth() === currentMonth);
-        const totalSales = monthlyOrders.reduce((acc, curr) => acc + curr.totalAmount, 0);
-
-        // Sales Trend (Last 7 Days)
+        const now = new Date();
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
         const sevenDaysAgo = new Date();
         sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-        const recentOrders = orders.filter(o => new Date(o.createdAt) >= sevenDaysAgo);
+        sevenDaysAgo.setHours(0, 0, 0, 0);
 
+        // Run aggregations and queries in parallel
+        const [monthlyStats, lowStock, salesTrendData] = await Promise.all([
+            Order.aggregate([
+                { $match: { createdAt: { $gte: startOfMonth } } },
+                { $group: { _id: null, totalSales: { $sum: "$totalAmount" }, orderCount: { $sum: 1 } } }
+            ]),
+            Product.find({ stock: { $lt: 5 } }).lean(),
+            Order.aggregate([
+                { $match: { createdAt: { $gte: sevenDaysAgo } } },
+                {
+                    $group: {
+                        _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+                        sales: { $sum: "$totalAmount" }
+                    }
+                },
+                { $sort: { "_id": 1 } }
+            ])
+        ]);
+
+        const totalSales = monthlyStats.length > 0 ? monthlyStats[0].totalSales : 0;
+        const orderCount = monthlyStats.length > 0 ? monthlyStats[0].orderCount : 0;
+
+        // Formulate 7-day trend with all days present
         const salesTrend = [];
+        const dayMap = new Map(salesTrendData.map(d => [d._id, d.sales]));
+
         for (let i = 6; i >= 0; i--) {
             const d = new Date();
             d.setDate(d.getDate() - i);
+            const key = d.toISOString().split('T')[0];
             const dateStr = d.toLocaleDateString('en-US', { weekday: 'short' });
-            const daySales = recentOrders
-                .filter(o => new Date(o.createdAt).toLocaleDateString() === new Date(d).toLocaleDateString())
-                .reduce((acc, curr) => acc + curr.totalAmount, 0);
-            salesTrend.push({ name: dateStr, sales: daySales });
+            salesTrend.push({
+                name: dateStr,
+                sales: dayMap.get(key) || 0
+            });
         }
 
         res.json({
             totalSales,
-            orderCount: monthlyOrders.length,
+            orderCount,
             lowStockCount: lowStock.length,
             lowStockItems: lowStock,
             salesTrend

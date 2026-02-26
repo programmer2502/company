@@ -15,7 +15,7 @@ const ProductCard = ({ product }) => {
     const [isHovered, setIsHovered] = useState(false);
 
     return (
-        <div className="card" style={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
+        <div className="card" style={{ background: 'white', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
             <div className="product-card-content">
                 <div className="product-image-container">
                     {displayImage ? (
@@ -25,11 +25,9 @@ const ProductCard = ({ product }) => {
                             style={{
                                 width: '100%',
                                 height: '100%',
-                                objectFit: 'cover',
-                                transition: 'transform 0.3s ease'
+                                objectFit: 'cover'
                             }}
-                            onMouseOver={e => e.currentTarget.style.transform = 'scale(1.05)'}
-                            onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
+
                         />
                     ) : (
                         <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#888' }}>
@@ -37,76 +35,71 @@ const ProductCard = ({ product }) => {
                         </div>
                     )}
                 </div>
+                <div className="cardDesign" style={{}}>
 
-                <h3 className="product-title" style={{ fontSize: '1.2rem', marginBottom: '0.5rem', fontWeight: 'bold' }}>{product.name}</h3>
-                <p className="product-price" style={{ color: 'var(--color-primary)', fontSize: '1.1rem', fontWeight: 'bold' }}>₹{product.price}</p>
+                    <h3 className="product-title" style={{ fontSize: '1.2rem', marginBottom: '0.5rem', fontWeight: 'bold' }}>{product.name}</h3>
 
-                {/* Mini Image Blocks */}
-                {product.images && product.images.length > 0 && (
-                    <div style={{ display: 'flex', gap: '0.5rem', overflowX: 'auto', paddingBottom: '0.5rem', margin: '0.5rem 0' }}>
-                        {(product.images.length > 0 ? product.images : [product.imageUrl]).slice(0, 5).map((img, idx) => (
-                            <img
-                                key={idx}
-                                src={getImageUrl(img)}
-                                alt={`${product.name} ${idx}`}
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    setDisplayImage(img);
-                                }}
-                                style={{
-                                    width: '40px',
-                                    height: '40px',
-                                    objectFit: 'cover',
-                                    borderRadius: '4px',
-                                    flexShrink: 0,
-                                    border: displayImage === img ? '2px solid var(--color-primary)' : '1px solid #eee',
-                                    cursor: 'pointer',
-                                    transition: 'border 0.2s'
-                                }}
-                            />
-                        ))}
+                    {/* Mini Image Blocks */}
+                    {product.images && product.images.length > 0 && (
+                        <div style={{ display: 'flex', gap: '0.5rem', overflowX: 'auto', paddingBottom: '0.5rem', margin: '0.5rem 0' }}>
+                            {(product.images.length > 0 ? product.images : [product.imageUrl]).slice(0, 5).map((img, idx) => (
+                                <img
+                                    key={idx}
+                                    src={getImageUrl(img)}
+                                    alt={`${product.name} ${idx}`}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        setDisplayImage(img);
+                                    }}
+                                    style={{
+                                        width: '40px',
+                                        height: '40px',
+                                        objectFit: 'cover',
+                                        borderRadius: '4px',
+                                        flexShrink: 0,
+                                        border: displayImage === img ? '2px solid var(--color-primary)' : '1px solid #eee',
+                                        cursor: 'pointer',
+                                        transition: 'border 0.2s'
+                                    }}
+                                />
+                            ))}
+                        </div>
+                    )}
+
+                    {/* Colors and Sizes */}
+                    <div style={{ marginTop: 'auto', fontSize: '0.9rem', color: '#666' }}>
+                        {product.colors && product.colors.length > 0 && (
+                            <div style={{ marginBottom: '0.3rem', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                                <span style={{ color: '#888' }}>Colors: </span>
+                                {product.colors.join(', ')}
+                            </div>
+                        )}
+                        {product.sizes && product.sizes.length > 0 && (
+                            <div>
+                                <span style={{ color: '#888' }}>Sizes: </span>
+                                {product.sizes.join(', ')}
+                            </div>
+                        )}
                     </div>
-                )}
-
-                {/* Colors and Sizes */}
-                <div style={{ marginTop: 'auto', fontSize: '0.9rem', color: '#666' }}>
-                    {product.colors && product.colors.length > 0 && (
-                        <div style={{ marginBottom: '0.3rem', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                            <span style={{ color: '#888' }}>Colors: </span>
-                            {product.colors.join(', ')}
-                        </div>
-                    )}
-                    {product.sizes && product.sizes.length > 0 && (
-                        <div>
-                            <span style={{ color: '#888' }}>Sizes: </span>
-                            {product.sizes.join(', ')}
-                        </div>
-                    )}
                 </div>
             </div>
+            <div className="cardSubDesign">
+                <p className="product-price" style={{ 
+                    color: 'var(--color-primary)', 
+                    fontSize: '1.25rem', 
+                    fontWeight: '700' 
+                }}>
+                    ₹{product.price}
+                </p>
 
-            <Link
-                to={`/product/${product._id}`}
-                className="btn product-btn"
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
-                style={{
-                    width: '60%',
-                    margin: '0 auto 1.5rem auto',
-                    display: 'block',
-                    textAlign: 'center',
-                    textDecoration: 'none',
-                    padding: '10px',
-                    fontWeight: 'bold',
-                    border: isHovered ? 'var(--color-primary)' : "",
-                    backgroundColor: isHovered ? 'black' : 'var(--color-primary)',
-                    color: isHovered ? 'var(--color-primary)' : '#000',
-                    borderRadius: '50px',
-                    boxShadow: isHovered ? '0px 0 10px 1px var(--color-primary)' : ""
-                }}
-            >
-                View Details
-            </Link>
+                <Link
+                    to={`/product/${product._id}`}
+                    className="cardDesignBtn"
+                >
+                    View Details
+                </Link>
+            </div>
+
         </div>
     );
 };

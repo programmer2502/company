@@ -89,11 +89,12 @@ button {
 
 .card {
   /* box-shadow: 0px 0px 10px 2px blueviolet; */
-  box-shadow: 0 0 4px 1px #FFD700;
+  box-shadow: 0 0 5px 1px #FFD700;
   background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  padding: 1.5rem;
+  /* border: 1px solid var(--color-border); */
+  /* padding: 1.5rem; */
   border-radius: 8px;
+
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -104,6 +105,40 @@ button {
     0px 0px 14px 1px rgba(255, 215, 0, 0.4),
     0px 0px 14px 1px rgba(255, 215, 0, 0.6);
   transform: translateY(-5px);
+}
+
+.cardDesign {
+  background: white;
+  Border-radius: 18px;
+  padding: 1rem;
+
+}
+
+.cardSubDesign {
+  display: flex;
+  align-content: center;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.cardDesignBtn {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  text-decoration: none;
+  font-weight: bold;
+  background: green;
+  width: 60%;
+  height: 60%;
+  /* border: isHovered ? var(--color-primary) : "; */
+  /* background-color: isHovered ? black : var(--color-primary); */
+  /* color: isHovered ? var(--color-primary) : #000; */
+  border-radius: 10px;
+  /* box-shadow: isHovered ? 0px 0 10px 1px var(--color-primary) : ; */
 }
 
 /* Form Elements */
@@ -288,11 +323,12 @@ textarea:focus {
 /* Product Card Responsiveness */
 .product-image-container {
   height: 300px;
-  background-color: #f0f0f0;
-  margin-bottom: 1rem;
+  background-color: black;
+  margin-bottom: -1rem;
   overflow: hidden;
   border-radius: 4px;
   position: relative;
+
 }
 
 .product-card-content {
@@ -300,7 +336,7 @@ textarea:focus {
   flex-direction: column;
   height: 100%;
   justify-content: space-between;
-  padding: 1.5rem;
+  /* padding: 1.5rem; */
 }
 
 @media (max-width: 600px) {
