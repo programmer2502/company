@@ -110,7 +110,7 @@ const ProductDetails = () => {
                         justifyContent: 'center'
                     }}>
                         <img
-                            src={selectedImage?.startsWith('http') ? selectedImage : `https://company-v2oe.onrender.com${selectedImage}`}
+                            src={selectedImage?.startsWith('http') ? selectedImage : `https://company-3qjr.onrender.com${selectedImage}`}
                             alt={product.name}
                             style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
                         />
@@ -136,7 +136,7 @@ const ProductDetails = () => {
                                     }}
                                 >
                                     <img
-                                        src={img.startsWith('http') ? img : `https://company-v2oe.onrender.com${img}`}
+                                        src={img.startsWith('http') ? img : `https://company-3qjr.onrender.com${img}`}
                                         alt={`${product.name} view ${index + 1}`}
                                         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                     />

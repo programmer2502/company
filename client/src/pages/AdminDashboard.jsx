@@ -422,7 +422,7 @@ const AdminDashboard = () => {
                                             product.images.map((imgUrl, idx) => (
                                                 <img
                                                     key={idx}
-                                                    src={imgUrl.startsWith('http') ? imgUrl : `https://company-v2oe.onrender.com${imgUrl}`}
+                                                    src={imgUrl.startsWith('http') ? imgUrl : `https://company-3qjr.onrender.com${imgUrl}`}
                                                     alt={`${product.name} ${idx + 1}`}
                                                     style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '4px', flexShrink: 0 }}
                                                 />
@@ -430,7 +430,7 @@ const AdminDashboard = () => {
                                         ) : (
                                             product.imageUrl && (
                                                 <img
-                                                    src={product.imageUrl.startsWith('http') ? product.imageUrl : `https://company-v2oe.onrender.com${product.imageUrl}`}
+                                                    src={product.imageUrl.startsWith('http') ? product.imageUrl : `https://company-3qjr.onrender.com${product.imageUrl}`}
                                                     alt={product.name}
                                                     style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '4px' }}
                                                 />
@@ -662,7 +662,7 @@ const AdminDashboard = () => {
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                         {item.product?.imageUrl && (
                                             <img
-                                                src={item.product.imageUrl.startsWith('http') ? item.product.imageUrl : `https://company-v2oe.onrender.com${item.product.imageUrl}`}
+                                                src={item.product.imageUrl.startsWith('http') ? item.product.imageUrl : `https://company-3qjr.onrender.com${item.product.imageUrl}`}
                                                 alt={item.product.name}
                                                 style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }}
                                             />
@@ -792,7 +792,7 @@ const AdminDashboard = () => {
                                 {editingProduct.existingImages && editingProduct.existingImages.map((img, idx) => (
                                     <div key={idx} style={{ position: 'relative', flexShrink: 0 }}>
                                         <img
-                                            src={img.startsWith('http') ? img : `https://company-v2oe.onrender.com${img}`}
+                                            src={img.startsWith('http') ? img : `https://company-3qjr.onrender.com${img}`}
                                             alt={`Existing ${idx}`}
                                             style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '4px' }}
                                         />

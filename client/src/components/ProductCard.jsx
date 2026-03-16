@@ -9,7 +9,7 @@ const ProductCard = ({ product }) => {
     // Helper to handle image URLs and apply transformations for speed
     const getImageUrl = (img, isThumbnail = false) => {
         if (!img) return '';
-        let url = img.startsWith('http') ? img : `https://company-v2oe.onrender.com${img}`;
+        let url = img.startsWith('http') ? img : `https://company-3qjr.onrender.com${img}`;
 
         // Apply ImageKit transformations if applicable
         if (url.includes('ik.imagekit.io')) {

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: 'https://company-v2oe.onrender.com/api',
+    baseURL: 'https://company-3qjr.onrender.com/api',
 });
 
 // Add a request interceptor to include the token
