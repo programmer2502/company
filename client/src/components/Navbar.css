@@ -111,10 +111,13 @@
     }
 
     .navbar-logo {
-        font-size: 1.25rem;
-        /* Slightly larger for better balance */
+        font-size: clamp(1rem, 4.5vw, 1.25rem);
         z-index: 101;
         position: relative;
+        max-width: 75vw;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .menu-toggle {
