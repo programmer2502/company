@@ -20,28 +20,14 @@ const ProductDetails = () => {
     useEffect(() => {
         const fetchProduct = async () => {
             try {
-                const { data } = await api.get(`/products?_id=${id}`);
-                // The API returns an array when querying by properties
-                const productData = Array.isArray(data) ? data[0] : data;
-
-                if (!productData) throw new Error('Product not found');
-
-                setProduct(productData);
-                if (productData.imageUrl) setSelectedImage(productData.imageUrl);
-                if (productData.images && productData.images.length > 0) setSelectedImage(productData.images[0]);
+                const { data } = await api.get(`/products/${id}`);
+                setProduct(data);
+                setSelectedImage(data.imageUrl); // Default
+                if (data.images && data.images.length > 0) setSelectedImage(data.images[0]); // Override if array exists
                 setLoading(false);
             } catch (err) {
-                // Try fetching specific ID if the above was a list
-                try {
-                    const { data } = await api.get(`/products/${id}`);
-                    setProduct(data);
-                    setSelectedImage(data.imageUrl); // Default
-                    if (data.images && data.images.length > 0) setSelectedImage(data.images[0]); // Override if array exists
-                    setLoading(false);
-                } catch (e) {
-                    setError('Failed to load product');
-                    setLoading(false);
-                }
+                setError('Failed to load product');
+                setLoading(false);
             }
         };
         fetchProduct();
