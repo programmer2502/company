@@ -134,6 +134,7 @@ button {
   background: green;
   width: 60%;
   height: 60%;
+  padding: 8px;
   /* border: isHovered ? var(--color-primary) : "; */
   /* background-color: isHovered ? black : var(--color-primary); */
   /* color: isHovered ? var(--color-primary) : #000; */

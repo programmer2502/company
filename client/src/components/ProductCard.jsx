@@ -1,7 +1,10 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { ShoppingCart } from 'lucide-react';
+import { CartContext } from '../context/CartContext';
 
 const ProductCard = ({ product }) => {
+    const { addToCart } = useContext(CartContext);
     // Initialize with the first image from the array or the legacy imageUrl
     const initialImage = (product.images && product.images.length > 0) ? product.images[0] : product.imageUrl;
     const [displayImage, setDisplayImage] = useState(initialImage);
@@ -21,6 +24,23 @@ const ProductCard = ({ product }) => {
     };
 
     const [isHovered, setIsHovered] = useState(false);
+
+    const handleAddToCart = (e) => {
+        e.preventDefault(); // Prevent navigating to the product detail page, since it's wrapped in a link
+        
+        // Select the first available color and size as default for quick add
+        const defaultColor = product.colors && product.colors.length > 0 ? product.colors[0] : null;
+        const defaultSize = product.sizes && product.sizes.length > 0 ? product.sizes[0] : null;
+
+        addToCart({
+            ...product,
+            selectedColor: defaultColor,
+            selectedSize: defaultSize,
+            quantity: 1
+        });
+        
+        // Optionally add a toast notification here later
+    };
 
     return (
         <div className="card" style={{ background: 'white', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
@@ -100,12 +120,41 @@ const ProductCard = ({ product }) => {
                     ₹{product.price}
                 </p>
 
-                <Link
-                    to={`/product/${product._id}`}
-                    className="cardDesignBtn"
-                >
-                    View Details
-                </Link>
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    <button
+                        onClick={handleAddToCart}
+                        style={{
+                            background: 'transparent',
+                            border: '1px solid var(--color-primary)',
+                            color: 'var(--color-primary)',
+                            padding: '0.4rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            cursor: 'pointer',
+                            borderRadius: '4px',
+                            transition: 'all 0.2s ease-in-out',
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.backgroundColor = 'var(--color-primary)';
+                            e.currentTarget.style.color = '#000';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.backgroundColor = 'transparent';
+                            e.currentTarget.style.color = 'var(--color-primary)';
+                        }}
+                        title="Add to Cart"
+                    >
+                        <ShoppingCart size={20} />
+                    </button>
+                    <Link
+                        to={`/product/${product._id}`}
+                        className="cardDesignBtn"
+                        style={{ flex: 1, textAlign: 'center' }}
+                    >
+                        View Details
+                    </Link>
+                </div>
             </div>
 
         </div>
