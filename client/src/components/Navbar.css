@@ -83,20 +83,22 @@
         top: 0;
         left: 0;
         width: 100vw;
-        height: 80vh;
+        height: 100vh;
+        overflow-y: auto;
         background-color: #000000 !important;
         /* Force black background */
         flex-direction: column;
-        justify-content: center;
+        justify-content: flex-start;
         align-items: center;
-        gap: 2rem;
+        gap: 1.5rem;
         transform: translateY(-100%);
         opacity: 0;
         visibility: hidden;
         /* Ensure it's not clickable or visible */
         transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out, visibility 0.3s;
         z-index: 100;
-        padding-top: 80px;
+        padding-top: 120px;
+        padding-bottom: 2rem;
         /* Space for the navbar header */
     }
 
