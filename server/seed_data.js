@@ -8,7 +8,7 @@ async function seedProduct() {
         // Since I can't easily copy the long URL from truncated output, I will use some generic placeholder URLs 
         // OR fetching the product first to get its current image and duplicating it.
 
-        const getRes = await axios.get(`https://company-v2oe.onrender.com/api/products?_id=${productId}`);
+        const getRes = await axios.get(`https://company-3qjr.onrender.com/api/products?_id=${productId}`);
         const product = Array.isArray(getRes.data) ? getRes.data[0] : getRes.data;
 
         let validImage = product.imageUrl || (product.images && product.images.length > 0 ? product.images[0] : 'https://via.placeholder.com/500');
@@ -43,7 +43,7 @@ async function seedProduct() {
         // existingImages
         images.forEach(img => form.append('existingImages', img));
 
-        const updateRes = await axios.put(`https://company-v2oe.onrender.com/api/products/${productId}`, form, {
+        const updateRes = await axios.put(`https://company-3qjr.onrender.com/api/products/${productId}`, form, {
             headers: {
                 ...form.getHeaders()
             }

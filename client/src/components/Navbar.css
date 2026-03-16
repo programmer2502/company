@@ -57,7 +57,7 @@
 }
 
 .menu-toggle {
-    display: none !important; 
+    display: none;
     background: none;
     overflow:hidden;
     border: none;
