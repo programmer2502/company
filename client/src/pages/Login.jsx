@@ -26,7 +26,7 @@ const Login = () => {
 
     return (
         <div className="container" style={{ maxWidth: '400px', marginTop: '5rem' }}>
-            <div className="card">
+            <div className="card" style={{padding: '40px'}}>
                 <h2 style={{ textAlign: 'center', marginBottom: '2rem' }}>Customer Login</h2>
                 {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
