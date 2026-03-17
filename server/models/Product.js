@@ -8,6 +8,7 @@ const productSchema = new mongoose.Schema({
         index: true
     },
     price: { type: Number, required: true },
+    discountPrice: { type: Number },
     stock: { type: Number, required: true, default: 0, index: true },
     imageUrl: { type: String, required: true }, // Main image (backward compatibility / default)
     images: [{ type: String }], // Array of image URLs

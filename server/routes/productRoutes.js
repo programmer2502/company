@@ -102,7 +102,7 @@ router.get('/:id', async (req, res) => {
 // Add Product (Admin)
 router.post('/', protect, admin, upload.array('images', 5), async (req, res) => {
     try {
-        const { name, category, price, stock, description, colors, sizes } = req.body;
+        const { name, category, price, discountPrice, stock, description, colors, sizes } = req.body;
         let imageUrl = '';
         let images = [];
 
@@ -136,6 +136,7 @@ router.post('/', protect, admin, upload.array('images', 5), async (req, res) => 
             name,
             category,
             price,
+            discountPrice,
             stock,
             imageUrl,
             images,
@@ -156,7 +157,7 @@ router.post('/', protect, admin, upload.array('images', 5), async (req, res) => 
 // Update Product (Admin)
 router.put('/:id', protect, admin, upload.array('images', 5), async (req, res) => {
     try {
-        const { name, category, price, stock, description, colors, sizes, existingImages } = req.body;
+        const { name, category, price, discountPrice, stock, description, colors, sizes, existingImages } = req.body;
 
         // Parse existingImages: it might be a string (single url), array of strings, or undefined
         let currentImages = [];
@@ -204,6 +205,7 @@ router.put('/:id', protect, admin, upload.array('images', 5), async (req, res) =
             name,
             category,
             price,
+            discountPrice,
             stock,
             description,
             colors: colors ? (Array.isArray(colors) ? colors : colors.split(',').map(c => c.trim())) : [],
