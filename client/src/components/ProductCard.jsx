@@ -27,7 +27,7 @@ const ProductCard = ({ product }) => {
 
     const handleAddToCart = (e) => {
         e.preventDefault(); // Prevent navigating to the product detail page, since it's wrapped in a link
-        
+
         // Select the first available color and size as default for quick add
         const defaultColor = product.colors && product.colors.length > 0 ? product.colors[0] : null;
         const defaultSize = product.sizes && product.sizes.length > 0 ? product.sizes[0] : null;
@@ -38,7 +38,7 @@ const ProductCard = ({ product }) => {
             selectedSize: defaultSize,
             quantity: 1
         });
-        
+
         // Optionally add a toast notification here later
     };
 
@@ -65,7 +65,7 @@ const ProductCard = ({ product }) => {
                 </div>
                 <div className="cardDesign" style={{}}>
 
-                    <h3 className="product-title" style={{ fontSize: '1.2rem', marginBottom: '0.5rem', fontWeight: 'bold' }}>{product.name}</h3>
+                    <h3 className="product-title" style={{ fontSize: '1.2rem', marginBottom: '0.5rem', fontWeight: 'bold', color: 'black' }}>{product.name}</h3>
 
                     {/* Mini Image Blocks */}
                     {product.images && product.images.length > 0 && (
@@ -112,13 +112,16 @@ const ProductCard = ({ product }) => {
                 </div>
             </div>
             <div className="cardSubDesign">
-                <p className="product-price" style={{
-                    color: 'var(--color-primary)',
-                    fontSize: '1.25rem',
-                    fontWeight: '700'
-                }}>
-                    ₹{product.price}
-                </p>
+                <div className="product-price" style={{ display: 'flex', alignItems: 'center' }}>
+                    {product.discountPrice ? (
+                        <>
+                            <span style={{ color: '#888', textDecoration: 'line-through', fontSize: '1rem', marginRight: '0.5rem' }}>₹{product.price}</span>
+                            <span style={{ color: 'var(--color-primary)', fontSize: '1.25rem', fontWeight: '700' }}>₹{product.discountPrice}</span>
+                        </>
+                    ) : (
+                        <span style={{ color: 'var(--color-primary)', fontSize: '1.25rem', fontWeight: '700' }}>₹{product.price}</span>
+                    )}
+                </div>
 
                 <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                     <button

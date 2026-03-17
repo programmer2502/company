@@ -10,7 +10,7 @@ const AdminDashboard = () => {
     const [stats, setStats] = useState({ totalSales: 0, orderCount: 0, lowStockItems: [] });
     const [products, setProducts] = useState([]);
     const [orders, setOrders] = useState([]);
-    const [newItem, setNewItem] = useState({ name: '', category: 'Clothing', price: '', stock: '', images: [], description: '', colors: '', sizes: '' });
+    const [newItem, setNewItem] = useState({ name: '', category: 'Clothing', price: '', discountPrice: '', stock: '', images: [], description: '', colors: '', sizes: '' });
     const [searchTerm, setSearchTerm] = useState('');
     const [userSearchTerm, setUserSearchTerm] = useState('');
     const [filterCategory, setFilterCategory] = useState('All');
@@ -72,6 +72,7 @@ const AdminDashboard = () => {
             formData.append('name', newItem.name);
             formData.append('category', newItem.category);
             formData.append('price', newItem.price);
+            if (newItem.discountPrice) formData.append('discountPrice', newItem.discountPrice);
             formData.append('stock', newItem.stock);
             formData.append('description', newItem.description);
             formData.append('colors', newItem.colors || '');
@@ -86,7 +87,7 @@ const AdminDashboard = () => {
             // Important: Send headers for multipart/form-data (axios usually handles this automatically with FormData)
             await api.post('/products', formData);
             alert('Product added successfully');
-            setNewItem({ name: '', category: 'Clothing', price: '', stock: '', images: [], description: '', colors: '', sizes: '' });
+            setNewItem({ name: '', category: 'Clothing', price: '', discountPrice: '', stock: '', images: [], description: '', colors: '', sizes: '' });
             if (fileInputRef.current) fileInputRef.current.value = '';
             fetchProducts();
         } catch (err) {
@@ -137,6 +138,7 @@ const AdminDashboard = () => {
             formData.append('name', editingProduct.name);
             formData.append('category', editingProduct.category);
             formData.append('price', editingProduct.price);
+            if (editingProduct.discountPrice) formData.append('discountPrice', editingProduct.discountPrice);
             formData.append('stock', editingProduct.stock);
             formData.append('description', editingProduct.description);
             formData.append('colors', editingProduct.colors || '');
@@ -505,6 +507,12 @@ const AdminDashboard = () => {
                             />
                             <input
                                 type="number"
+                                placeholder="Discount Price (Optional)"
+                                value={newItem.discountPrice}
+                                onChange={(e) => setNewItem({ ...newItem, discountPrice: e.target.value })}
+                            />
+                            <input
+                                type="number"
                                 placeholder="Stock"
                                 value={newItem.stock}
                                 onChange={(e) => setNewItem({ ...newItem, stock: e.target.value })}
@@ -740,6 +748,12 @@ const AdminDashboard = () => {
                                 value={editingProduct.price}
                                 onChange={(e) => setEditingProduct({ ...editingProduct, price: e.target.value })}
                                 required
+                            />
+                            <input
+                                type="number"
+                                placeholder="Discount Price (Optional)"
+                                value={editingProduct.discountPrice || ''}
+                                onChange={(e) => setEditingProduct({ ...editingProduct, discountPrice: e.target.value })}
                             />
                             <input
                                 type="number"

@@ -137,8 +137,15 @@ const ProductDetails = () => {
                     <h1 style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>{product.name}</h1>
                     <p style={{ fontSize: '1.2rem', color: '#666', marginBottom: '1.5rem' }}>{product.category}</p>
 
-                    <div style={{ fontSize: '2rem', fontWeight: 'bold', color: 'var(--color-primary)', marginBottom: '2rem' }}>
-                        ₹{product.price}
+                    <div style={{ marginBottom: '2rem', display: 'flex', alignItems: 'center' }}>
+                        {product.discountPrice ? (
+                            <>
+                                <span style={{ color: '#888', textDecoration: 'line-through', fontSize: '1.2rem', marginRight: '1rem' }}>₹{product.price}</span>
+                                <span style={{ fontSize: '2rem', fontWeight: 'bold', color: 'var(--color-primary)' }}>₹{product.discountPrice}</span>
+                            </>
+                        ) : (
+                            <span style={{ fontSize: '2rem', fontWeight: 'bold', color: 'var(--color-primary)' }}>₹{product.price}</span>
+                        )}
                     </div>
 
                     {/* Colors */}

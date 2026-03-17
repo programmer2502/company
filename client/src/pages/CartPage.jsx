@@ -22,7 +22,7 @@ const CartPage = () => {
             let message = `*New Order Request*\n\n`;
             cart.forEach((item, index) => {
                 message += `${index + 1}. ${item.name} (Qty: ${item.quantity})\n`;
-                message += `   Price: ₹${item.price}\n`;
+                message += `   Price: ₹${item.discountPrice || item.price}\n`;
                 if (item.imageUrl) {
                     // With ImageKit, it's always an HTTP URL. 
                     const imgUrl = item.imageUrl.startsWith('http') ? item.imageUrl : `https://company-3qjr.onrender.com${item.imageUrl}`;
@@ -40,7 +40,7 @@ const CartPage = () => {
             const items = cart.map(c => ({
                 product: c._id,
                 quantity: c.quantity,
-                priceAtPurchase: c.price,
+                priceAtPurchase: c.discountPrice || c.price,
                 selectedSize: c.selectedSize,
                 selectedColor: c.selectedColor
             }));
@@ -93,7 +93,7 @@ const CartPage = () => {
                                 )}
                                 <div style={{ flex: 1 }}>
                                     <h3 style={{ marginBottom: '0.5rem' }}>{item.name}</h3>
-                                    <p style={{ color: '#666', fontSize: '0.9rem' }}>Price: ₹{item.price}</p>
+                                    <p style={{ color: '#666', fontSize: '0.9rem' }}>Price: ₹{item.discountPrice || item.price}</p>
                                     <p style={{ color: '#888', margin: '0.2rem 0' }}>Qty: {item.quantity}</p>
                                     {(item.selectedColor || item.selectedSize) && (
                                         <p style={{ color: '#888', fontSize: '0.8rem', marginTop: '0.2rem' }}>
@@ -104,7 +104,7 @@ const CartPage = () => {
                                 </div>
                             </div>
                             <div className="cart-item-actions">
-                                <p>₹{item.price * item.quantity}</p>
+                                <p>₹{(item.discountPrice || item.price) * item.quantity}</p>
                                 <button onClick={() => removeFromCart(item._id)} style={{ color: 'red', fontSize: '0.8rem', background: 'none' }}>Remove</button>
                             </div>
                         </div>
