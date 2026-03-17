@@ -24,7 +24,7 @@ const AdminDashboard = () => {
 
     const fileInputRef = useRef(null);
 
-    const { data: statsData, isLoading: statsLoading } = useQuery({
+    const { data: statsData, isLoading: statsLoading, refetch: refetchStats } = useQuery({
         queryKey: ['admin_stats'],
         queryFn: async () => {
             const { data } = await api.get('/admin/stats');
@@ -33,7 +33,7 @@ const AdminDashboard = () => {
         staleTime: 1000 * 60 * 2, // 2 mins
     });
 
-    const { data: productsResult, isLoading: productsLoading } = useQuery({
+    const { data: productsResult, isLoading: productsLoading, refetch: refetchProducts } = useQuery({
         queryKey: ['admin_products'],
         queryFn: async () => {
             const { data } = await api.get('/products?limit=100');
@@ -42,7 +42,7 @@ const AdminDashboard = () => {
         staleTime: 1000 * 60 * 5,
     });
 
-    const { data: ordersData, isLoading: ordersLoading } = useQuery({
+    const { data: ordersData, isLoading: ordersLoading, refetch: refetchOrders } = useQuery({
         queryKey: ['admin_orders'],
         queryFn: async () => {
             const { data } = await api.get('/admin/users-orders');
@@ -87,9 +87,8 @@ const AdminDashboard = () => {
             // Important: Send headers for multipart/form-data (axios usually handles this automatically with FormData)
             await api.post('/products', formData);
             alert('Product added successfully');
-            setNewItem({ name: '', category: 'Clothing', price: '', discountPrice: '', stock: '', images: [], description: '', colors: '', sizes: '' });
             if (fileInputRef.current) fileInputRef.current.value = '';
-            fetchProducts();
+            refetchProducts();
         } catch (err) {
             console.error(err);
             alert('Failed to add product');
@@ -99,8 +98,8 @@ const AdminDashboard = () => {
     const handleUpdateStock = async (id, newStock) => {
         try {
             await api.put(`/products/${id}`, { stock: newStock });
-            fetchProducts();
-            fetchStats(); // Update low stock stats
+            refetchProducts();
+            refetchStats(); // Update low stock stats
         } catch (err) {
             alert('Failed to update stock');
         }
@@ -110,8 +109,8 @@ const AdminDashboard = () => {
         if (window.confirm('Are you sure you want to delete this product?')) {
             try {
                 await api.delete(`/products/${id}`);
-                fetchProducts();
-                fetchStats();
+                refetchProducts();
+                refetchStats();
             } catch (err) {
                 alert('Failed to delete product');
             }
@@ -162,8 +161,8 @@ const AdminDashboard = () => {
             alert('Product updated successfully');
             setShowEditModal(false);
             setEditingProduct(null);
-            fetchProducts();
-            fetchStats();
+            refetchProducts();
+            refetchStats();
         } catch (err) {
             console.error(err);
             alert('Failed to update product');
@@ -180,7 +179,7 @@ const AdminDashboard = () => {
             await api.put(`/admin/orders/${selectedOrder._id}/status`, { status });
             alert(`Order marked as ${status}`);
             setShowOrderModal(false);
-            fetchOrders();
+            refetchOrders();
         } catch (err) {
             alert('Failed to update status');
         }
@@ -193,7 +192,7 @@ const AdminDashboard = () => {
             try {
                 await api.put(`/admin/users/${userId}/block`);
                 alert('User status updated');
-                fetchOrders(); // Refresh to see new status
+                refetchOrders(); // Refresh to see new status
             } catch (err) {
                 alert('Failed to update user status');
             }

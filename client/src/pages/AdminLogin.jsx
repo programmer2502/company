@@ -20,7 +20,7 @@ const AdminLogin = () => {
 
     return (
         <div className="container" style={{ maxWidth: '400px', marginTop: '5rem' }}>
-            <div className="card" style={{ borderColor: 'var(--color-primary)' }}>
+            <div className="card" style={{ paddingBottom: '20px', borderColor: 'var(--color-primary)' }}>
                 <h2 style={{ textAlign: 'center', marginBottom: '0.5rem', color: 'var(--color-primary)' }}>Admin Login</h2>
                 <p style={{ textAlign: 'center', marginBottom: '2rem', color: '#666' }}>Authorized Personnel Only</p>
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
