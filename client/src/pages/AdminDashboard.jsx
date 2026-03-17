@@ -308,7 +308,7 @@ const AdminDashboard = () => {
             )}
 
             {activeTab === 'users' && (
-                <div className="card">
+                <div className="card" style={{ padding: '20px' }}>
                     <h3>User Purchase History</h3>
                     <div style={{ marginBottom: '1rem' }}>
                         <input
@@ -415,7 +415,7 @@ const AdminDashboard = () => {
                                 return matchesSearch && matchesCategory;
                             })
                             .map((product) => (
-                                <div key={product._id} className="card">
+                                <div key={product._id} style={{ padding: '20px' }} className="card">
                                     <h4>{product.name}</h4>
                                     <p style={{ color: '#888' }}>{product.category}</p>
                                     <div style={{ marginTop: '0.5rem', marginBottom: '0.5rem', display: 'flex', gap: '0.5rem', overflowX: 'auto', paddingBottom: '0.5rem' }}>
@@ -471,7 +471,7 @@ const AdminDashboard = () => {
             )}
 
             {activeTab === 'add' && (
-                <div className="card" style={{ maxWidth: '600px', margin: '0 auto' }}>
+                <div className="card" style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
                     <h3 style={{ marginBottom: '2rem' }}>Add New Item</h3>
                     <form onSubmit={handleAddItem} encType="multipart/form-data" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                         <input
