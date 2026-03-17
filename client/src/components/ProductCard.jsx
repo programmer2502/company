@@ -43,7 +43,7 @@ const ProductCard = ({ product }) => {
     };
 
     return (
-        <div className="card" style={{ scrollPaddingBottom: '20px', background: 'white', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
+        <div className="card" style={{ paddingBottom: '20px', background: 'white', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
             <div className="product-card-content">
                 <div className="product-image-container">
                     {displayImage ? (
